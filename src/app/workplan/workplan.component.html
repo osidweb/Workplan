@@ -1,0 +1,32 @@
+<div class="container">
+  
+  <!-- для экранов 768px и более -->
+  <div class="container-desctop" *ngIf="!isMobile">
+    
+    <!-- левая часть -->
+    <div class="left-part">
+
+      <!-- выбор отделов -->
+      <div class="departments">
+        <mat-form-field floatLabel="never">
+          <mat-select [value]="selectedDepartment.key" (selectionChange)="selectDepartment(selectedDepartment)">
+            <mat-option *ngFor="let department of departmentList" [value]="department.key">
+              {{department.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- центральная часть -->
+    <div class="central-part"></div>
+
+    <!-- правая часть -->
+    <div class="right-part"></div>
+  </div>
+  
+  <!-- для экранов менее 768px -->
+  <div class="container-mobile" *ngIf="isMobile">
+    MOBILE
+  </div>
+</div>

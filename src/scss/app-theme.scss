@@ -1,0 +1,74 @@
+// ПЕРЕОПРЕДЕЛЕНИЕ ПЕРЕМЕННЫХ ANGULAR MATERIAL
+// И ВЫБОР ОСНОВНОЙ ЦВЕТОВОЙ ПАЛИТРЫ
+@import '~@angular/material/theming';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+@include mat-core();
+$mat-myapp-primary: (
+    50 : #E4EFF8,
+    100 : #BCD6EE,
+    200 : #8FBBE3,
+    300 : #62A0D8,
+    400 : #408BCF,
+    500 : #1E77C7,
+    600 : #1A6FC1,
+    700 : #1664BA,
+    800 : #125AB3,
+    900 : #0A47A6,
+    A100 : #D3E2FF,
+    A200 : #A0C0FF,
+    A400 : #6D9FFF,
+    A700 : #538EFF,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+$mat-myapp-accent: (
+    50 : #E4EFF8,
+    100 : #BCD6EE,
+    200 : #8FBBE3,
+    300 : #62A0D8,
+    400 : #408BCF,
+    500 : #1E77C7,
+    600 : #1A6FC1,
+    700 : #1664BA,
+    800 : #125AB3,
+    900 : #0A47A6,
+    A100 : #D3E2FF,
+    A200 : #A0C0FF,
+    A400 : #6D9FFF,
+    A700 : #538EFF,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+$primary: mat-palette($mat-myapp-primary);
+$accent: mat-palette($mat-myapp-accent);
+$theme: mat-light-theme($primary, $accent);
+@include angular-material-theme($theme);

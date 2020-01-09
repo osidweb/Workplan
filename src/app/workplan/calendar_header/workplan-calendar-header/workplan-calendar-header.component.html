@@ -1,0 +1,20 @@
+<div class="calendar-header">
+  <div class="line">
+    <div
+      class="day"
+      *ngFor="let day of daysInMonth"
+      [ngClass]="{'day-off': dayOff(day.number), 'sunday': sunday(day.number)}"
+    >
+      {{day.shortName}}
+    </div>
+  </div>
+  <div class="line">
+    <div
+      class="day"
+      *ngFor="let day of daysInMonth; let i = index"
+      [ngClass]="{'sunday': sunday(day.number)}"
+    >
+      {{i + 1}}
+    </div>
+  </div>
+</div>

@@ -1,5 +1,82 @@
+@import '~src/scss/variables';
+
 .container {
-  padding-top: 50px;
+  font-size: 14px;
+  color: $font-color;
+}
+
+
+
+// для экранов 768px и более
+.container-desctop {
+  display: flex;
+  flex-grow: 1;
+}
+
+// левая часть
+.left-part {
+  flex-shrink: 0;
+  width: 260px;
+  padding-bottom: 30px;
+  border-right: 1px solid $border-color;
+}
+
+.departments {
+  padding-top: 13px;
   padding-left: 16px;
   padding-right: 16px;
+
+  .mat-form-field {
+    width: 100%;
+  }
+}
+
+// центарльная часть
+.central-part-header {
+  position: fixed;
+  top: 50px;
+  left: 261px;
+  z-index: 10;
+  background: #ffffff;
+}
+
+.date-selection {
+  display: flex;
+  align-items: center;
+  padding: 30px 20px 20px 20px;
+  color: $dark-grey;
+}
+
+.date-selection-arrow {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+
+  & + .date-selection-arrow {
+    margin-left: 10px;
+  }
+}
+
+.date-selection-name {
+  margin-left: 10px;
+  font-size: 20px;
+  text-transform: capitalize;
+  line-height: 24px;
+}
+
+.calendar-body {
+  padding-top: 115px;
+  width: 992px;
+}
+
+// правая часть
+.right-part {
+  position: relative;
+  padding-left: 20px;
+}
+
+.right-part-list {
+  position: fixed;
+  top: 120px;
+  left: initial;
 }

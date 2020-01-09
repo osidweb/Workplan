@@ -1,0 +1,25 @@
+@import '~src/scss/variables';
+
+.calendar-header {
+  border-top: 1px solid $border-color;
+}
+
+.line {
+  display: flex;
+  font-size: 14px;
+  border-bottom: 1px solid $border-color;
+}
+
+.day {
+  width: 31px;
+  border-right: 1px solid $border-color;
+  text-align: center;
+}
+
+.sunday {
+  border-right: 1px solid $black;
+}
+
+.day-off {
+  color: $red;
+}

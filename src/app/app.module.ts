@@ -6,6 +6,7 @@ import { MatToolbarModule } from '@angular/material';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { WorkplanModule } from './workplan/workplan.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { WorkplanModule } from './workplan/workplan.module';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MatToolbarModule,
     WorkplanModule
   ],

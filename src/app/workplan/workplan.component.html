@@ -9,7 +9,7 @@
       <!-- выбор отделов -->
       <div class="departments">
         <mat-form-field floatLabel="never">
-          <mat-select [value]="selectedDepartment.key" (selectionChange)="selectDepartment(selectedDepartment)">
+          <mat-select [value]="select.department" (selectionChange)="selectDepartment(select.department)">
             <mat-option *ngFor="let department of departmentList" [value]="department.key">
               {{department.value}}
             </mat-option>
@@ -19,10 +19,47 @@
     </div>
 
     <!-- центральная часть -->
-    <div class="central-part"></div>
+    <div class="central-part">
+
+      <!-- выбор даты и заголовок календаря -->
+      <div class="central-part-header">
+
+        <!-- выбор даты -->
+        <div class="date-selection">
+          <div class="date-selection-arrow" (click)="showPrevDate()">
+            <mat-icon svgIcon="workplan:keyboard_arrow_left"></mat-icon>
+          </div>
+
+          <div class="date-selection-arrow" (click)="showNextDate()">
+            <mat-icon svgIcon="workplan:keyboard_arrow_right"></mat-icon>
+          </div>
+
+          <div class="date-selection-name">{{dateInformation.month.name}}</div>
+        </div>
+
+        <!-- заголовок календаря -->
+        <div class="calendar-header">
+          <app-workplan-calendar-header
+            [daysInMonth]="daysArray"
+          ></app-workplan-calendar-header
+            >
+        </div>
+      </div>
+
+      <!-- тело календаря -->
+      <div class="calendar-body">
+        body calendar
+      </div>
+    </div>
 
     <!-- правая часть -->
-    <div class="right-part"></div>
+    <div class="right-part">
+      <div class="right-part-list">
+        <div class="item" *ngFor="let item of deciphermentOfAbbreviations">
+          {{item}}
+        </div>
+      </div>
+    </div>
   </div>
   
   <!-- для экранов менее 768px -->

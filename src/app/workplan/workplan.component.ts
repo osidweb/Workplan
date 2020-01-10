@@ -3,13 +3,16 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { _ } from 'underscore';
 
-import { Department } from '../common/interfaces/department';
+import { DictionaryRecord } from '../common/interfaces/dictionary_record';
 import { SelectedData } from '../common/interfaces/selected_data';
 import { DayOfWeek } from '../common/interfaces/day_of_week';
+import { WorkplanUser } from '../common/interfaces/workplan-user';
+import { DictionaryService } from '../common/services/dictionary.service';
+import { WorkplanService } from '../common/services/workplan.service';
 
 @Component({
   selector: 'app-workplan',
@@ -34,11 +37,8 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   daysArray: DayOfWeek[];
 
   // список отделов
-  departmentList: Department[] = [
-    { key: '1', value: 'Директорат и бухгалтерия' },
-    { key: '2', value: 'Отдел разработки 1С' },
-    { key: '3', value: 'Отдел продаж' }
-  ];
+  departmentList: DictionaryRecord[] = [];
+
   // выбранный отдел и дата
   select: SelectedData;
   sdate: string;
@@ -46,10 +46,15 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   // информация о выбранной дате
   dateInformation: any;
 
+  // список сотрудников
+  usersList: WorkplanUser[] = [];
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private dictionaryService: DictionaryService,
+    private workplanService: WorkplanService
   ) {
     const BP = { Small: '(max-width: 767px)' };
     this.breakpointObserver.observe([
@@ -70,18 +75,23 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     console.log('weekArray = ', this.weekArray);
 
     // получить выбранный отдел и дату, заполнить календарь
-    this._getSelectedDate(this.monthCounter)
+    forkJoin(
+      this.dictionaryService.getDictionary({type: 'department'}),
+      this._getSelectedDate(this.monthCounter)
+    )
       .pipe(takeUntil(this.destroyed))
-      .subscribe(res => {
+      .subscribe(([departmentDictionary, selectedDate]) => {
+        this.departmentList = departmentDictionary.records;
+
         this.select = {
           department: this.departmentList[0].key,
-          date: res
+          date: selectedDate
         };
         console.log('отдел и дата: ', this.select);
 
-        this.sdate = res.format('MM-YYYY');
+        this.sdate = selectedDate.format('MM-YYYY');
 
-        // this.getUsers(this.select.department, this.sdate);
+        this._getUsers(this.select.department, this.sdate);
         this._createCalendar();
       });
   }
@@ -145,6 +155,15 @@ export class WorkplanComponent implements OnInit, OnDestroy {
       observer.next(currDate);
       observer.complete();
     });
+  }
+
+  // ПОЛУЧИТЬ СОТРУДНИКОВ ПО ОТДЕЛУ ЗА ПЕРИОД
+  _getUsers(department: string, date: string) {
+    this.workplanService.getUsers({ department, date })
+      .pipe(takeUntil(this.destroyed))
+      .subscribe((res: WorkplanUser[]) => {
+        this.usersList = res;
+      });
   }
 
   // ЗАПОЛНИТЬ КАЛЕНДАРЬ НА МЕСЯЦ: номера и названия дней недели

@@ -3,14 +3,16 @@ import { CommonModule } from '@angular/common';
 import { MatSelectModule, MatIconModule } from '@angular/material';
 
 import { WorkplanComponent } from './workplan.component';
-import { WorkplanCalendarHeaderComponent } from './calendar_header/workplan-calendar-header/workplan-calendar-header.component';
+import { WorkplanCalendarHeaderComponent } from './calendar-header/workplan-calendar-header/workplan-calendar-header.component';
+import { WorkplanRowComponent } from './calendar-body/workplan-row/workplan-row.component';
 
 
 
 @NgModule({
   declarations: [
     WorkplanComponent,
-    WorkplanCalendarHeaderComponent
+    WorkplanCalendarHeaderComponent,
+    WorkplanRowComponent
   ],
   imports: [
     CommonModule,

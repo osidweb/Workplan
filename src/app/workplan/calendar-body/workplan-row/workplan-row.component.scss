@@ -1,0 +1,26 @@
+@import '~src/scss/variables';
+
+.line {
+  display: flex;
+  border-bottom: 1px solid $border-color;
+}
+
+.day {
+  width: 31px;
+  border-right: 1px solid $border-color;
+  text-align: center;
+  cursor: pointer;
+}
+
+.sunday {
+  border-right: 1px solid $black;
+}
+
+.day-off {
+  color: $red;
+}
+
+.absence {
+  background-color: $blue;
+  color: $white;
+}

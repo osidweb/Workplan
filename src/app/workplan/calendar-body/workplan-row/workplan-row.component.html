@@ -1,0 +1,12 @@
+<div class="line">
+  <div
+    class="day"
+    *ngFor="let day of rowData"
+    [ngClass]="{'day-off': dayOff(day.dayInWeekNumber), 
+                'sunday': sunday(day.dayInWeekNumber), 
+                'absence': day.dayAbsence, 
+                'selected-cell': day.daySelected
+              }">
+    {{day.dayCause}}
+  </div>
+</div>

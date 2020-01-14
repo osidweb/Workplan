@@ -7,12 +7,13 @@ import { Subject, Observable, forkJoin } from 'rxjs';
 import * as moment from 'moment';
 import { _ } from 'underscore';
 
-import { DictionaryRecord } from '../common/interfaces/dictionary_record';
-import { SelectedData } from '../common/interfaces/selected_data';
-import { DayOfWeek } from '../common/interfaces/day_of_week';
+import { DictionaryRecord } from '../common/interfaces/dictionary-record';
+import { SelectedData } from '../common/interfaces/selected-data';
+import { DayOfWeek } from '../common/interfaces/day-of-week';
 import { WorkplanUser } from '../common/interfaces/workplan-user';
 import { DictionaryService } from '../common/services/dictionary.service';
 import { WorkplanService } from '../common/services/workplan.service';
+import { WorkplanRowData } from '../common/interfaces/workplan-row-data';
 
 @Component({
   selector: 'app-workplan',
@@ -26,6 +27,13 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   // расшифровка сокращений
   deciphermentOfAbbreviations: string[] = [
     'р — рабочий', 'в — выходной', 'о — отпуск', 'к - командировка'
+  ];
+
+  // список причин неявок
+  dictCause: DictionaryRecord[] = [
+    { key: 'o', value: 'отпуск'},
+    { key: 'b', value: 'больничный'},
+    { key: 'k', value: 'командировка' }
   ];
 
   // счетчик выбранного месяца
@@ -47,6 +55,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   dateInformation: any;
 
   // список сотрудников
+  notGroupedUserList: WorkplanUser[] = [];
   usersList: WorkplanUser[] = [];
 
   constructor(
@@ -72,7 +81,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.weekArray = moment.weekdaysShort();
     this.weekArray.splice(6, 0, this.weekArray.splice(0, 1)[0]);
-    console.log('weekArray = ', this.weekArray);
+    // console.log('weekArray = ', this.weekArray);
 
     // получить выбранный отдел и дату, заполнить календарь
     forkJoin(
@@ -84,21 +93,35 @@ export class WorkplanComponent implements OnInit, OnDestroy {
         this.departmentList = departmentDictionary.records;
 
         this.select = {
-          department: this.departmentList[0].key,
+          department: this.departmentList[1].key,
           date: selectedDate
         };
-        console.log('отдел и дата: ', this.select);
+        // console.log('отдел и дата: ', this.select);
 
         this.sdate = selectedDate.format('MM-YYYY');
 
-        this._getUsers(this.select.department, this.sdate);
         this._createCalendar();
+        this.getUsers(this.select.department, this.sdate);
       });
   }
 
   ngOnDestroy() {
     this.destroyed.next(null);
     this.destroyed.complete();
+  }
+
+  // получить сотрудников по отделу за период
+  getUsers(department: string, date: string) {
+    this.workplanService.getUsers({ department, date })
+      .pipe(takeUntil(this.destroyed))
+      .subscribe((res: WorkplanUser[]) => {
+        this.notGroupedUserList = res;
+        this.usersList = _.groupBy(res, (user: WorkplanUser) => {
+          return user.workgroup;
+        });
+
+        this._refreshRowData();
+      });
   }
 
   // показать График за предыдущую дату
@@ -115,7 +138,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
 
 
 
-  // ПОЛУЧИТЬ ВЫБРАННУЮ ДАТУ (текущая дата, скорректированная на счетчик месяца)
+  // получить выбранную дату (текущая дата, скорректированная на счетчик месяца)
   _getSelectedDate(mCounter: number): Observable<moment.Moment> {
     let currDate: moment.Moment = null;
 
@@ -157,13 +180,14 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ПОЛУЧИТЬ СОТРУДНИКОВ ПО ОТДЕЛУ ЗА ПЕРИОД
-  _getUsers(department: string, date: string) {
-    this.workplanService.getUsers({ department, date })
-      .pipe(takeUntil(this.destroyed))
-      .subscribe((res: WorkplanUser[]) => {
-        this.usersList = res;
-      });
+  // обновить данные для работы дочерних компонентов
+  _refreshRowData() {
+    const rowData: WorkplanRowData = {
+      selectedDate: this.dateInformation,
+      daysInMonth: this.daysArray,
+      users: this.notGroupedUserList
+    };
+    this.workplanService.changeWorkplanData(rowData);
   }
 
   // ЗАПОЛНИТЬ КАЛЕНДАРЬ НА МЕСЯЦ: номера и названия дней недели
@@ -195,11 +219,12 @@ export class WorkplanComponent implements OnInit, OnDestroy {
 
         this.select.date = res;
 
-        this.sdate = res.format('MM-YYYY');
-        // this.getUsers(this.select.department, this.sdate);
         if (!isMobile) {
           this._createCalendar();
         }
+
+        this.sdate = res.format('MM-YYYY');
+        this.getUsers(this.select.department, this.sdate);
       });
   }
 

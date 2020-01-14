@@ -9,12 +9,23 @@
       <!-- выбор отделов -->
       <div class="departments">
         <mat-form-field floatLabel="never">
-          <mat-select [value]="select.department" (selectionChange)="selectDepartment(select.department)">
+          <mat-select [value]="select.department" (selectionChange)="getUsers($event.value, sdate)">
             <mat-option *ngFor="let department of departmentList" [value]="department.key">
               {{department.value}}
             </mat-option>
           </mat-select>
         </mat-form-field>
+      </div>
+
+      <!-- список сотрудников -->
+      <div class="user-list">
+        <div class="user-list-item" *ngFor="let item of usersList | keyvalue">
+          <div class="workgroup-name">{{item.key}}</div>
+
+          <div class="user-name" *ngFor="let user of item.value">
+            {{user.name}}
+          </div>
+        </div>
       </div>
     </div>
 
@@ -48,7 +59,16 @@
 
       <!-- тело календаря -->
       <div class="calendar-body">
-        body calendar
+        <div *ngFor="let item of usersList | keyvalue">
+          <div class="workgroup-name">&nbsp;</div>
+        
+          <div *ngFor="let user of item.value">
+            <app-workplan-row
+              [userLogin]="user.login" 
+              [causeList]="dictCause"
+            ></app-workplan-row>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DayOfWeek } from 'src/app/common/interfaces/day_of_week';
+import { DayOfWeek } from 'src/app/common/interfaces/day-of-week';
 
 @Component({
   selector: 'app-workplan-calendar-header',
@@ -12,7 +12,6 @@ export class WorkplanCalendarHeaderComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log('daysInMonth = ', this.daysInMonth);
   }
 
   // проверка на выходной день
@@ -21,7 +20,7 @@ export class WorkplanCalendarHeaderComponent implements OnInit {
   }
 
   // проверка на воскресенье
-  sunday(day) {
+  sunday(day: number): boolean {
     return day === 0;
   }
 

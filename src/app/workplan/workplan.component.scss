@@ -3,6 +3,7 @@
 .container {
   font-size: 14px;
   color: $font-color;
+  line-height: 21px;
 }
 
 
@@ -11,6 +12,7 @@
 .container-desctop {
   display: flex;
   flex-grow: 1;
+  min-height: calc(100vh - 50px);
 }
 
 // левая часть
@@ -22,12 +24,33 @@
 }
 
 .departments {
-  padding-top: 13px;
+  padding-top: 18px;
   padding-left: 16px;
   padding-right: 16px;
 
   .mat-form-field {
     width: 100%;
+  }
+}
+
+.user-list {
+  padding-top: 44px;
+}
+
+.user-list-item {
+  >div {
+    padding-left: 20px;
+    padding-right: 5px;
+    line-height: 21px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border-bottom: 1px solid $border-color;
+  }
+
+  .workgroup-name {
+    padding-top: 5px;
+    font-weight: 600;
   }
 }
 
@@ -65,8 +88,13 @@
 }
 
 .calendar-body {
-  padding-top: 115px;
-  width: 992px;
+  padding-top: 119px;
+
+  .workgroup-name {
+    padding-top: 5px;
+    border-bottom: 1px solid $border-color;
+    border-right: 1px solid $border-color;
+  }
 }
 
 // правая часть

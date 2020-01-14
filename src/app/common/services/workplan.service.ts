@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { _ } from 'underscore';
 
 import { WorkplanUser } from '../interfaces/workplan-user';
+import { WorkplanRowData } from '../interfaces/workplan-row-data';
 
 @Injectable({
   providedIn: 'root'
@@ -12,45 +13,51 @@ export class WorkplanService {
     {
       department: '1',
       users: [
-        { login: 'SKukresh', name: 'Сергей Кукреш', firstName: 'Сергей', lastName: 'Кукреш', workgroup: ['Генеральный директор'] },
-        { login: 'echernysheva', name: 'Екатерина Чернышева', firstName: 'Екатерина', lastName: 'Чернышева', workgroup: ['Бухгалтер'] },
-        { login: 'easorgina', name: 'Елена Асоргина', firstName: 'Елена', lastName: 'Асоргина', workgroup: ['Финансовый директор'] },
-        { login: 'vnagornaya', name: 'Виктория Нагорная', firstName: 'Виктория', lastName: 'Нагорная', workgroup: ['Коммерческий директор']}
+        { login: 'SKukresh', name: 'Сергей Кукреш', firstName: 'Сергей', lastName: 'Кукреш', workgroup: 'Генеральный директор' },
+        { login: 'echernysheva', name: 'Екатерина Чернышева', firstName: 'Екатерина', lastName: 'Чернышева', workgroup: 'Бухгалтер' },
+        { login: 'easorgina', name: 'Елена Асоргина', firstName: 'Елена', lastName: 'Асоргина', workgroup: 'Финансовый директор' },
+        { login: 'vnagornaya', name: 'Виктория Нагорная', firstName: 'Виктория', lastName: 'Нагорная', workgroup: 'Коммерческий директор'}
       ]
     },
     {
       department: '2',
       users: [
-        { login: 'otrofimov', name: 'Олег Трофимов', firstName: 'Олег', lastName: 'Трофимов', workgroup: ['Дизайнер'] },
-        { login: 'nezan3319', name: 'Никита Езан', firstName: 'Никита', lastName: 'Езан', workgroup: ['FrontEnd разработчик'] },
-        { login: 'kfedorov', name: 'Кирилл Федоров', firstName: 'Кирилл', lastName: 'Федоров', workgroup: ['Портал дев лид'] },
-        { login: 'ddudarev', name: 'Дмитрий Дударев', firstName: 'Дмитрий', lastName: 'Дударев', workgroup: ['PHP программист'] },
-        { login: 'igospadarev', name: 'Илья Госпадарев', firstName: 'Илья', lastName: 'Госпадарев', workgroup: ['PHP программист'] },
-        { login: 'osidorova', name: 'Оксана Сидорова', firstName: 'Оксана', lastName: 'Сидорова', workgroup: ['FrontEnd разработчик'],
+        { login: 'otrofimov', name: 'Олег Трофимов', firstName: 'Олег', lastName: 'Трофимов', workgroup: 'Дизайнер' },
+        { login: 'nezan3319', name: 'Никита Езан', firstName: 'Никита', lastName: 'Езан', workgroup: 'FrontEnd разработчик' },
+        { login: 'kfedorov', name: 'Кирилл Федоров', firstName: 'Кирилл', lastName: 'Федоров', workgroup: 'Портал дев лид' },
+        { login: 'ddudarev', name: 'Дмитрий Дударев', firstName: 'Дмитрий', lastName: 'Дударев', workgroup: 'PHP программист' },
+        { login: 'igospadarev', name: 'Илья Госпадарев', firstName: 'Илья', lastName: 'Госпадарев', workgroup: 'PHP программист' },
+        { login: 'osidorova', name: 'Оксана Сидорова', firstName: 'Оксана', lastName: 'Сидорова', workgroup: 'FrontEnd разработчик',
           absence: [
             {
-              unid: '15749309175DDF89E55E3F1157493091', dateOfBeginning: '2019-12-02', dateOfClosing: '2019-12-08', cause: 'o',
+              unid: '15749309175DDF89E55E3F1157493091', dateOfBeginning: '2020-01-02', dateOfClosing: '2020-01-08', cause: 'o',
               involvement: 0, deputyLogin: 'kfedorov'
             }
           ]
         },
-        { login: 'vkruglov', name: 'Валерий Круглов', firstName: 'Валерий', lastName: 'Круглов', workgroup: ['PHP программист'] }
+        { login: 'vkruglov', name: 'Валерий Круглов', firstName: 'Валерий', lastName: 'Круглов', workgroup: 'PHP программист' }
       ]
     },
     {
       department: '3',
       users: [
-        { login: 'akroyshner', name: 'Алия Кройшнер', firstName: 'Алия', lastName: 'Кройшнер', workgroup: ['Менеджер по продажам'] },
+        { login: 'akroyshner', name: 'Алия Кройшнер', firstName: 'Алия', lastName: 'Кройшнер', workgroup: 'Менеджер по продажам' },
         { login: 'akadurkina17519', name: 'Анастасия Кадуркина', firstName: 'Анастасия',
-          lastName: 'Кадуркина', workgroup: ['Менеджер по продажам'] },
+          lastName: 'Кадуркина', workgroup: 'Менеджер по продажам' },
         { login: 'nostanina25719', name: 'Наталья Останина', firstName: 'Наталья',
-          lastName: 'Останина', workgroup: ['Менеджер по продажам'] },
-        { login: 'mkachmaz12919', name: 'Марина Качмаз', firstName: 'Марина', lastName: 'Качмаз', workgroup: ['Менеджер по продажам'] },
+          lastName: 'Останина', workgroup: 'Менеджер по продажам' },
+        { login: 'mkachmaz12919', name: 'Марина Качмаз', firstName: 'Марина', lastName: 'Качмаз', workgroup: 'Менеджер по продажам' },
         { login: 'ksoloveva51119', name: 'Кристина Соловьева', firstName: 'Кристина',
-          lastName: 'Соловьева', workgroup: ['Менеджер по продажам'] }
+          lastName: 'Соловьева', workgroup: 'Менеджер по продажам' }
       ]
     }
   ];
+
+  // для подписки на изменение workplanRowData в разных несвязанных компонентах
+  // объект, содержащий текущее значение workplanRowData
+  private workplanDataSource = new BehaviorSubject({});
+  // подписка на изменение значения workplanRowData
+  workplanDataChanges = this.workplanDataSource.asObservable();
 
   constructor() { }
 
@@ -65,5 +72,10 @@ export class WorkplanService {
       observer.next(result);
       observer.complete();
     });
+  }
+
+  // перезаписать текущее значение workplanRowData на измененное
+  changeWorkplanData(data: WorkplanRowData): void {
+    this.workplanDataSource.next(data);
   }
 }

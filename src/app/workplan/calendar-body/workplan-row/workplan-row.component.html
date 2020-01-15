@@ -1,12 +1,16 @@
 <div class="line">
   <div
     class="day"
-    *ngFor="let day of rowData"
+    *ngFor="let day of rowData; let i = index"
     [ngClass]="{'day-off': dayOff(day.dayInWeekNumber), 
                 'sunday': sunday(day.dayInWeekNumber), 
                 'absence': day.dayAbsence, 
                 'selected-cell': day.daySelected
-              }">
+              }"
+    (mouseover)="selectCell($event, i)"
+    (click)="changeWorkplan($event, i, day)"
+    title="{{ day.dayAbsence ? 'Редактировать неявку' : 'Добавить неявку' }}"
+  >
     {{day.dayCause}}
   </div>
 </div>

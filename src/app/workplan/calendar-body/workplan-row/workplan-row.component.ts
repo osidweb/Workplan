@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ElementRef, Renderer2, ViewChild, AfterViewInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import * as moment from 'moment';
@@ -28,6 +28,10 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
   @Input() causeList: DictionaryRecord[];
 
   private destroyed = new Subject();
+  listenFuncMousedown;
+
+  // элемент обертка с классом 'line'
+  lineElement: ElementRef;
 
   selectedDate: any;
   daysInMonth: DayOfWeek[];
@@ -56,10 +60,19 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
   rowData: IRowData[] = [];
 
   constructor(
+    private eref: ElementRef,
+    private renderer: Renderer2,
     private workplanService: WorkplanService
   ) { }
 
   ngOnInit() {
+    // получить элемент обертку с классом 'line'
+    // this.lineElement = this.eref.nativeElement.children[0];
+    // this.lineElement = this.renderer.nextSibling(this.eref.nativeElement);
+    this.lineElement = this.eref.nativeElement.querySelector('.line');
+    console.log('lineElement = ', this.lineElement);
+
+    // подписка на изменения даты/сотрудников
     this.workplanService.workplanDataChanges
       .pipe(takeUntil(this.destroyed))
       .subscribe((wpData: WorkplanRowData) => {
@@ -67,10 +80,17 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
         this.daysInMonth = wpData.daysInMonth;
         this.user = _.findWhere(wpData.users, { login: this.userLogin });
 
-        // console.log('selectedDate = ', this.selectedDate, 'daysInMonth = ', this.daysInMonth, 'user = ', this.user);
-
         this.refreshRowData();
       });
+
+    // клик вне элемента поиска и вне контейнера 'mat-select'
+    this.listenFuncMousedown = this.renderer.listen('document', 'mousedown', (event) => {
+
+      if (!this.eref.nativeElement.contains(event.target) && this.clickCount === 1) {
+        console.log('CLICK document = ', event.target);
+        this.removeSelection();
+      }
+    });
   }
 
   // проверка на выходной день
@@ -100,9 +120,191 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
     }
   }
 
+  // выделить ячейки при наведении
+  selectCell($event: Event, dayIndex: number): void {
+    // console.log('$event = ', $event, 'target = ', $event.target, 'current = ', $event.currentTarget);
+    const elementLine = ($event.currentTarget as HTMLTextAreaElement).parentElement;
+    let maxNumber = null;
+
+    // если выделение начато
+    if (elementLine.classList.contains('selected-row')) {
+
+      // снять выделение со всех ячеек
+      // for (let i = 0; i < this.rowData.length; i++) {
+      //   this.rowData[i].daySelected = false;
+      // }
+      for (const item of this.rowData) {
+        item.daySelected = false;
+      }
+
+      // выделение правее первой выделенной ячейки
+      if (this.startActiveCellIndex <= dayIndex) {
+        this.endCellIndex = dayIndex;
+        this.startCellIndex = this.startActiveCellIndex;
+
+        for (let i = this.startActiveCellIndex; i <= dayIndex; i++) {
+          if (this.rowData[i].dayAbsence) {
+            maxNumber = i;
+          }
+
+          if (maxNumber === null || i < maxNumber) {
+            this.rowData[i].daySelected = true;
+          } else {
+            this.rowData[i].daySelected = false;
+          }
+        }
+      }
+
+      // выделение левее первой выделенной ячейки
+      if (this.startActiveCellIndex >= dayIndex) {
+        this.endCellIndex = this.startActiveCellIndex;
+        this.startCellIndex = dayIndex;
+
+        for (let i = this.startActiveCellIndex; i >= dayIndex; i--) {
+          if (this.rowData[i].dayAbsence) {
+            maxNumber = i;
+          }
+
+          if (maxNumber === null || i > maxNumber) {
+            this.rowData[i].daySelected = true;
+          } else {
+            this.rowData[i].daySelected = false;
+          }
+        }
+      }
+    }
+  }
+
+  // изменить табель
+  changeWorkplan($event: Event, dayIndex: number, day: IRowData): void {
+    const elementDay = ($event.currentTarget as HTMLTextAreaElement);
+    // const elementLine = elementDay.parentElement;
+    // console.log('this.eref.nativeElement = ', this.eref.nativeElement);
+
+    if (this.clickCount < 2) {
+      this.clickCount++;
+    } else {
+      this.clickCount = 1;
+    }
+
+    const formattedNumber = ('0' + (dayIndex + 1)).slice(-2);
+    const cellDate = this.selectedDate.year + '-' + this.selectedDate.month.number + '-' + formattedNumber;
+    const cellAbsence = elementDay.classList.contains('absence');
+
+    // обработка кликов
+    switch (this.clickCount) {
+      case 1:
+        // если кликнули по ячейке с "неявкой"
+        if (cellAbsence) {
+          this.removeSelection();
+
+          for (const absence of this.user.absence) {
+            const dStart = absence.dateOfBeginning;
+            const dEnd = absence.dateOfClosing;
+
+            if (cellDate >= dStart && cellDate <= dEnd) {
+              this.model = {
+                unid: absence.unid,
+                login: this.user.login,
+                editDate: {
+                  startDate: absence.dateOfBeginning,
+                  endDate: absence.dateOfClosing,
+                },
+                cause: absence.cause,
+                involvement: absence.involvement,
+                deputyLogin: absence.deputyLogin === null || absence.deputyLogin === ''
+                  ? ''
+                  : absence.deputyLogin
+              };
+            }
+          }
+          // начальная дата редактируемого периода
+          this.startDateEditing = this.model.editDate.startDate;
+          this.showInvolvementMenu($event.target, true);
+        } else {
+          // если кликнули по обычной ячейке
+          this.startActiveCellIndex = dayIndex;
+          // elementLine.classList.add('selected-row');
+          this.renderer.addClass(this.lineElement, 'selected-row');
+          day.daySelected = true;
+          // elementDay.classList.add('selected-start');
+          this.renderer.addClass(elementDay, 'selected-start');
+        }
+        break;
+
+      case 2:
+        // если кликнули по ячейке с "неявкой" или по ячейке, которая находится в диапазоне с неявкой
+        if (cellAbsence || !day.daySelected) {
+          this.clickCount = 1;
+        } else {
+          // если кликнули по обычной ячейке
+          let formattedStart = null;
+          let formattedEnd = null;
+
+          // если второй раз кликнули по той же ячейке, что и первый раз
+          if (this.startActiveCellIndex === dayIndex) {
+            formattedStart = ('0' + (dayIndex + 1)).slice(-2);
+            formattedEnd = ('0' + (dayIndex + 1)).slice(-2);
+          } else {
+            formattedStart = ('0' + (this.startCellIndex + 1)).slice(-2);
+            formattedEnd = ('0' + (this.endCellIndex + 1)).slice(-2);
+          }
+
+          this.model.editDate.startDate = this.selectedDate.year + '-' + this.selectedDate.month.number + '-' + formattedStart;
+          this.model.editDate.endDate = this.selectedDate.year + '-' + this.selectedDate.month.number + '-' + formattedEnd;
+          this.model.login = this.user.login;
+
+          // elementDay.classList.add('selected-start');
+          this.renderer.addClass(elementDay, 'selected-start');
+          this.showChoiceOfCause($event);
+        }
+        break;
+    }
+  }
+
+  // снять выделение с ячеек
+  removeSelection(): void {
+    this.clickCount = 0;
+    this.startActiveCellIndex = null;
+    this.startCellIndex = null;
+    this.endCellIndex = null;
+    this.startDateEditing = null;
+
+    this.renderer.removeClass(this.lineElement, 'selected-row');
+    this.renderer.removeClass(this.eref.nativeElement.querySelector('.selected-start'), 'selected-start');
+
+    for (const item of this.rowData) {
+      item.daySelected = false;
+    }
+
+    this.model = {
+      unid: null,
+      login: null,
+      editDate: {
+        startDate: null,
+        endDate: null,
+      },
+      cause: null,
+      involvement: 0,
+      deputyLogin: null
+    };
+  }
+
+  // Всплывающее окно для заполнения % вовлеченности и заместителя
+  showInvolvementMenu(parSel, editing) {
+    console.log('showInvolvementMenu');
+  }
+
+  // всплывающее окно выбор причины отсутствия
+  showChoiceOfCause($event) {
+    console.log('showChoiceOfCause');
+  }
+
   ngOnDestroy() {
     this.destroyed.next(null);
     this.destroyed.complete();
+
+    this.listenFuncMousedown();
   }
 
 
@@ -123,7 +325,8 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
       for (const absence of user.absence) {
         const dStart = absence.dateOfBeginning;
         const dEnd = absence.dateOfClosing;
-        const cause = absence.cause;
+        const findedRecord: DictionaryRecord = _.findWhere(this.causeList, { key: absence.cause });
+        const cause = findedRecord ? findedRecord.shortValue : '';
 
         if (!day.dayAbsence) {
           if (cellDate >= dStart && cellDate <= dEnd) {

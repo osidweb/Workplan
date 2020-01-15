@@ -24,3 +24,30 @@
   background-color: $blue;
   color: $white;
 }
+
+// строка, в которой происходит выделение ячеек
+.selected-row {
+
+  // ячейка - в выделенном диапазоне
+  .selected-cell:not(.absence):not(.selected-start) {
+    background-color: #bbd6ee;
+
+    &:hover {
+      background-color: #78addd;
+    }
+  }
+
+  // ячейка - начало выделения
+  .selected-start {
+    background-color: $blue;
+
+    &:hover {
+      background-color: $blue;
+    }
+  }
+
+  .absence,
+  div:not(.selected-cell):not(.selected-start) {
+    cursor: default;
+  }
+}

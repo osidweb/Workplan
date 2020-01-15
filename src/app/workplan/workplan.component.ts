@@ -26,14 +26,14 @@ export class WorkplanComponent implements OnInit, OnDestroy {
 
   // расшифровка сокращений
   deciphermentOfAbbreviations: string[] = [
-    'р — рабочий', 'в — выходной', 'о — отпуск', 'к - командировка'
+    'р — рабочий', 'в — выходной', 'о — отпуск', 'к - командировка', 'б - больничный'
   ];
 
   // список причин неявок
   dictCause: DictionaryRecord[] = [
-    { key: 'o', value: 'отпуск'},
-    { key: 'b', value: 'больничный'},
-    { key: 'k', value: 'командировка' }
+    { key: 'o', value: 'отпуск', shortValue: 'о'},
+    { key: 'b', value: 'больничный', shortValue: 'б'},
+    { key: 'k', value: 'командировка', shortValue: 'к' }
   ];
 
   // счетчик выбранного месяца

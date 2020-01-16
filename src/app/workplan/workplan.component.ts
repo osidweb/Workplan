@@ -139,7 +139,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
 
 
   // получить выбранную дату (текущая дата, скорректированная на счетчик месяца)
-  _getSelectedDate(mCounter: number): Observable<moment.Moment> {
+  private _getSelectedDate(mCounter: number): Observable<moment.Moment> {
     let currDate: moment.Moment = null;
 
     return new Observable((observer) => {
@@ -181,7 +181,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   }
 
   // обновить данные для работы дочерних компонентов
-  _refreshRowData() {
+  private _refreshRowData() {
     const rowData: WorkplanRowData = {
       selectedDate: this.dateInformation,
       daysInMonth: this.daysArray,
@@ -192,7 +192,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
 
   // ЗАПОЛНИТЬ КАЛЕНДАРЬ НА МЕСЯЦ: номера и названия дней недели
   // (для экранов 768px и более)
-  _createCalendar(): void {
+  private _createCalendar(): void {
     let indexShortName = this.weekArray.indexOf(this.dateInformation.firstDay.shortName);
     this.daysArray = [];
 
@@ -212,7 +212,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   }
 
   // ПОКАЗАТЬ ГРАФИК ЗА ДАТУ
-  _showWorkplan(mCount, isMobile) {
+  private _showWorkplan(mCount, isMobile) {
     this._getSelectedDate(mCount)
       .pipe(takeUntil(this.destroyed))
       .subscribe(res => {

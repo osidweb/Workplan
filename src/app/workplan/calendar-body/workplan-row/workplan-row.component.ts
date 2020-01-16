@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ElementRef, Renderer2, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ElementRef, Renderer2 } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import * as moment from 'moment';
@@ -10,6 +10,7 @@ import { DictionaryRecord } from '../../../common/interfaces/dictionary-record';
 import { WorkplanRowModel } from 'src/app/common/interfaces/workplan-row-model';
 import { WorkplanService } from 'src/app/common/services/workplan.service';
 import { WorkplanRowData } from 'src/app/common/interfaces/workplan-row-data';
+import { IAbsencePanelData, AbsenceService } from 'src/app/common/components/absence.service';
 
 interface IRowData {
   dayInWeekNumber: number;
@@ -62,7 +63,8 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
   constructor(
     private eref: ElementRef,
     private renderer: Renderer2,
-    private workplanService: WorkplanService
+    private workplanService: WorkplanService,
+    private absenceService: AbsenceService
   ) { }
 
   ngOnInit() {
@@ -83,7 +85,7 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
         this.refreshRowData();
       });
 
-    // клик вне элемента поиска и вне контейнера 'mat-select'
+    // клик вне выделямых ячеек в строке
     this.listenFuncMousedown = this.renderer.listen('document', 'mousedown', (event) => {
 
       if (!this.eref.nativeElement.contains(event.target) && this.clickCount === 1) {
@@ -220,7 +222,7 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
           }
           // начальная дата редактируемого периода
           this.startDateEditing = this.model.editDate.startDate;
-          this.showInvolvementMenu($event.target, true);
+          this.showAbsencePanel($event);
         } else {
           // если кликнули по обычной ячейке
           this.startActiveCellIndex = dayIndex;
@@ -256,7 +258,8 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
 
           // elementDay.classList.add('selected-start');
           this.renderer.addClass(elementDay, 'selected-start');
-          this.showChoiceOfCause($event);
+          // this.showChoiceOfCause($event);
+          this.showAbsencePanel($event);
         }
         break;
     }
@@ -270,8 +273,13 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
     this.endCellIndex = null;
     this.startDateEditing = null;
 
+    console.log('this.lineElement = ', this.lineElement);
+    console.log('this.eref.nativeElement.querySelector(".selected-start") = ', this.eref.nativeElement.querySelector('.selected-start'));
+    const selectedStartDayEl = this.eref.nativeElement.querySelector('.selected-start');
     this.renderer.removeClass(this.lineElement, 'selected-row');
-    this.renderer.removeClass(this.eref.nativeElement.querySelector('.selected-start'), 'selected-start');
+    if (selectedStartDayEl) {
+      this.renderer.removeClass(this.eref.nativeElement.querySelector('.selected-start'), 'selected-start');
+    }
 
     for (const item of this.rowData) {
       item.daySelected = false;
@@ -291,8 +299,29 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
   }
 
   // Всплывающее окно для заполнения % вовлеченности и заместителя
-  showInvolvementMenu(parSel, editing) {
-    console.log('showInvolvementMenu');
+  showAbsencePanel(event) {
+    const overlayOrigin: ElementRef = event.target;
+
+    const panelData: IAbsencePanelData = {
+      overlayOrigin,
+      // documentUnid: this.document.unid,
+      // tags: this.document.Tags
+    };
+
+    const absenceRef = this.absenceService.open(overlayOrigin, { data: panelData });
+
+    // после закрытия панели
+    absenceRef.afterClosed()
+      .subscribe(result => {
+        if (result) {
+          // this._applyTagsList(result);
+        }
+      });
+
+    // обновить позицию панели
+    setTimeout(() => {
+      this.absenceService.updatePosition(overlayOrigin);
+    }, 400);
   }
 
   // всплывающее окно выбор причины отсутствия
@@ -310,12 +339,12 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
 
 
   // заполнение табеля по умолчанию (рабочие и выходные дни согласно календаря)
-  _defaultWorkplan(day: number): string {
+  private _defaultWorkplan(day: number): string {
     return this.dayOff(day) ? 'в' : 'р';
   }
 
   // заполнить табель для сотрудника
-  _createWorkplan(dayNumber: number, day: IRowData, user: WorkplanUser): void {
+  private _createWorkplan(dayNumber: number, day: IRowData, user: WorkplanUser): void {
     const dayInWeekNumber = day.dayInWeekNumber;
     const formattedNumber = ('0' + (dayNumber + 1)).slice(-2);
     const cellDate = this.selectedDate.year + '-' + this.selectedDate.month.number + '-' + formattedNumber;

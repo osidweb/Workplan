@@ -4,5 +4,44 @@
   (@panelContent.start)="onAnimationStart($event)"
   (@panelContent.done)="onAnimationDone($event)"
 >
-  ABSENCE PANEL WORK
+  <form
+    class="absence-panel-content"
+    [formGroup]="absenceForm"
+    (ngSubmit)="save()"
+  >
+
+    <!-- заголовок -->
+    <div class="absence-panel-header">Неявка</div>
+
+    <!-- основное содержимое -->
+    <div class="absence-panel-main">
+      <mat-form-field>
+        <mat-label>Причина отсутствия</mat-label>
+        <mat-select formControlName="cause" (selectionChange)="changeCause($event.value)" required>
+          <mat-option *ngFor="let cause of panelData.causeList" [value]="cause.key">
+            {{cause.value}}
+          </mat-option>
+        </mat-select>
+
+        <mat-error>Выберите причину отсутствия</mat-error>
+      </mat-form-field>
+
+      <p>
+        Form Status: {{ absenceForm.status }}
+      </p>
+    </div>
+
+    <!-- кнопки -->
+    <div class="absence-panel-actions">
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+      >
+        Применить
+      </button>
+
+      <button mat-button (click)="cancel()">Отменить</button>
+    </div>
+  </form>
 </div>

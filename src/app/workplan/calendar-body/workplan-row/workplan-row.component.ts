@@ -302,8 +302,13 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
   showAbsencePanel(event) {
     const overlayOrigin: ElementRef = event.target;
 
+    console.log('this.model = ', this.model);
+
     const panelData: IAbsencePanelData = {
       overlayOrigin,
+      causeList: this.causeList,
+      cause: this.model.cause,
+      editDate: this.model.editDate
       // documentUnid: this.document.unid,
       // tags: this.document.Tags
     };

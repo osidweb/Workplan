@@ -5,9 +5,16 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { AbsenceRef } from './absence/absence-ref';
 import { AbsencePanelComponent } from './absence/absence-panel/absence-panel.component';
 import { ABSENCE_PANEL_DATA } from './absence/absence.tokens';
+import { DictionaryRecord } from '../interfaces/dictionary-record';
 
 export interface IAbsencePanelData {
   overlayOrigin: any;
+  causeList: DictionaryRecord[];
+  cause: string | null;
+  editDate: {
+    startDate: string | null;
+    endDate: string | null;
+  };
   // documentUnid: string;
   // tags: ISelectedTag[];
 }

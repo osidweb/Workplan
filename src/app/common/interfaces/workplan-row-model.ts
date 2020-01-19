@@ -6,6 +6,4 @@ export interface WorkplanRowModel {
     endDate: string | null;
   };
   cause: string | null;
-  involvement: number | null;
-  deputyLogin: string | null;
 }

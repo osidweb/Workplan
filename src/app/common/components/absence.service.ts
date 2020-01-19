@@ -15,8 +15,6 @@ export interface IAbsencePanelData {
     startDate: string | null;
     endDate: string | null;
   };
-  // documentUnid: string;
-  // tags: ISelectedTag[];
 }
 
 interface AbsencePanelConfig {

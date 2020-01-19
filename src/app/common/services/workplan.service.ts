@@ -22,8 +22,7 @@ export class WorkplanService {
         { login: 'easorgina', name: 'Елена Асоргина', firstName: 'Елена', lastName: 'Асоргина', workgroup: 'Финансовый директор',
           absence: [
             {
-              unid: '15749309175DDF89E55E3F1157494040', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'k',
-              involvement: 10, deputyLogin: 'SKukresh'
+              unid: '15749309175DDF89E55E3F1157494040', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'k'
             }
           ]
         },
@@ -41,8 +40,7 @@ export class WorkplanService {
         { login: 'osidorova', name: 'Оксана Сидорова', firstName: 'Оксана', lastName: 'Сидорова', workgroup: 'FrontEnd разработчик',
           absence: [
             {
-              unid: '15749309175DDF89E55E3F1157493091', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'o',
-              involvement: 0, deputyLogin: 'kfedorov'
+              unid: '15749309175DDF89E55E3F1157493091', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'o'
             }
           ]
         },
@@ -55,8 +53,7 @@ export class WorkplanService {
         { login: 'akroyshner', name: 'Алия Кройшнер', firstName: 'Алия', lastName: 'Кройшнер', workgroup: 'Менеджер по продажам',
           absence: [
             {
-              unid: '15749309175DDF89E55E3F1157495050', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'b',
-              involvement: 10, deputyLogin: 'SKukresh'
+              unid: '15749309175DDF89E55E3F1157495050', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'b'
             }
           ]
         },

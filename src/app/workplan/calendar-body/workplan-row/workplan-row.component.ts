@@ -48,9 +48,7 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
       startDate: null,
       endDate: null,
     },
-    cause: null,
-    involvement: 0,
-    deputyLogin: null
+    cause: null
   };
 
   startDateEditing: string | null = null;
@@ -69,10 +67,7 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // получить элемент обертку с классом 'line'
-    // this.lineElement = this.eref.nativeElement.children[0];
-    // this.lineElement = this.renderer.nextSibling(this.eref.nativeElement);
     this.lineElement = this.eref.nativeElement.querySelector('.line');
-    console.log('lineElement = ', this.lineElement);
 
     // подписка на изменения даты/сотрудников
     this.workplanService.workplanDataChanges
@@ -89,7 +84,6 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
     this.listenFuncMousedown = this.renderer.listen('document', 'mousedown', (event) => {
 
       if (!this.eref.nativeElement.contains(event.target) && this.clickCount === 1) {
-        console.log('CLICK document = ', event.target);
         this.removeSelection();
       }
     });
@@ -132,9 +126,6 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
     if (elementLine.classList.contains('selected-row')) {
 
       // снять выделение со всех ячеек
-      // for (let i = 0; i < this.rowData.length; i++) {
-      //   this.rowData[i].daySelected = false;
-      // }
       for (const item of this.rowData) {
         item.daySelected = false;
       }
@@ -180,8 +171,6 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
   // изменить табель
   changeWorkplan($event: Event, dayIndex: number, day: IRowData): void {
     const elementDay = ($event.currentTarget as HTMLTextAreaElement);
-    // const elementLine = elementDay.parentElement;
-    // console.log('this.eref.nativeElement = ', this.eref.nativeElement);
 
     if (this.clickCount < 2) {
       this.clickCount++;
@@ -212,11 +201,7 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
                   startDate: absence.dateOfBeginning,
                   endDate: absence.dateOfClosing,
                 },
-                cause: absence.cause,
-                involvement: absence.involvement,
-                deputyLogin: absence.deputyLogin === null || absence.deputyLogin === ''
-                  ? ''
-                  : absence.deputyLogin
+                cause: absence.cause
               };
             }
           }
@@ -226,10 +211,8 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
         } else {
           // если кликнули по обычной ячейке
           this.startActiveCellIndex = dayIndex;
-          // elementLine.classList.add('selected-row');
           this.renderer.addClass(this.lineElement, 'selected-row');
           day.daySelected = true;
-          // elementDay.classList.add('selected-start');
           this.renderer.addClass(elementDay, 'selected-start');
         }
         break;
@@ -256,9 +239,7 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
           this.model.editDate.endDate = this.selectedDate.year + '-' + this.selectedDate.month.number + '-' + formattedEnd;
           this.model.login = this.user.login;
 
-          // elementDay.classList.add('selected-start');
           this.renderer.addClass(elementDay, 'selected-start');
-          // this.showChoiceOfCause($event);
           this.showAbsencePanel($event);
         }
         break;
@@ -273,12 +254,13 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
     this.endCellIndex = null;
     this.startDateEditing = null;
 
-    console.log('this.lineElement = ', this.lineElement);
-    console.log('this.eref.nativeElement.querySelector(".selected-start") = ', this.eref.nativeElement.querySelector('.selected-start'));
-    const selectedStartDayEl = this.eref.nativeElement.querySelector('.selected-start');
     this.renderer.removeClass(this.lineElement, 'selected-row');
-    if (selectedStartDayEl) {
-      this.renderer.removeClass(this.eref.nativeElement.querySelector('.selected-start'), 'selected-start');
+
+    const selectedStartDayEl: NodeList = this.eref.nativeElement.querySelectorAll('.selected-start');
+    if (selectedStartDayEl && selectedStartDayEl.length > 0) {
+      _.each(selectedStartDayEl, (el) => {
+        this.renderer.removeClass(el, 'selected-start');
+      });
     }
 
     for (const item of this.rowData) {
@@ -292,13 +274,11 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
         startDate: null,
         endDate: null,
       },
-      cause: null,
-      involvement: 0,
-      deputyLogin: null
+      cause: null
     };
   }
 
-  // Всплывающее окно для заполнения % вовлеченности и заместителя
+  // Всплывающее окно для заполнения причины и периода отсутствия
   showAbsencePanel(event) {
     const overlayOrigin: ElementRef = event.target;
 
@@ -309,8 +289,6 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
       causeList: this.causeList,
       cause: this.model.cause,
       editDate: this.model.editDate
-      // documentUnid: this.document.unid,
-      // tags: this.document.Tags
     };
 
     const absenceRef = this.absenceService.open(overlayOrigin, { data: panelData });
@@ -320,6 +298,8 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
       .subscribe(result => {
         if (result) {
           // this._applyTagsList(result);
+        } else {
+          this.removeSelection();
         }
       });
 
@@ -327,11 +307,6 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.absenceService.updatePosition(overlayOrigin);
     }, 400);
-  }
-
-  // всплывающее окно выбор причины отсутствия
-  showChoiceOfCause($event) {
-    console.log('showChoiceOfCause');
   }
 
   ngOnDestroy() {

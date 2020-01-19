@@ -3,13 +3,11 @@ export interface WorkplanUser {
   name: string;
   firstName: string;
   lastName: string;
-  workgroup: string[];
+  workgroup: string;
   absence: {
     unid: string;
     dateOfBeginning: string;
     dateOfClosing: string;
     cause: string;
-    involvement: number
-    deputyLogin?: string;
   }[];
 }

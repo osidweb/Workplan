@@ -1,6 +1,9 @@
 import { Component, OnInit, EventEmitter, Inject } from '@angular/core';
 import { trigger, state, style, transition, animate, AnimationEvent } from '@angular/animations';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import * as moment from 'moment';
+import * as localization from 'moment/locale/ru';
+moment.locale('ru', localization);
 
 import { AbsenceRef } from '../absence-ref';
 import { ABSENCE_PANEL_DATA } from '../absence.tokens';
@@ -33,10 +36,14 @@ export class AbsencePanelComponent implements OnInit {
 
   ngOnInit() {
     console.log('panelData = ', this.panelData);
+    const dateRangeValue = {
+      startDate: moment(this.panelData.editDate.startDate, 'YYYY-MM-DD'),
+      endDate: moment(this.panelData.editDate.endDate, 'YYYY-MM-DD')
+    };
 
     this.absenceForm = this.formBuilder.group({
-      cause: new FormControl(this.panelData.cause, [Validators.required])
-      // sections: new FormArray(controls)
+      cause: new FormControl(this.panelData.cause, [Validators.required]),
+      daterange: new FormControl(dateRangeValue, [Validators.required])
     });
     console.log('this.absenceForm.value = ', this.absenceForm.value);
   }

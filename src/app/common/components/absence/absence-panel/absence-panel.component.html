@@ -26,22 +26,34 @@
         <mat-error>Выберите причину отсутствия</mat-error>
       </mat-form-field>
 
-      <p>
-        Form Status: {{ absenceForm.status }}
-      </p>
+      <mat-form-field>
+        <mat-label>Период отсутствия</mat-label>
+        <input
+          type="text"
+          matInput
+          ngxDaterangepickerMd
+          [locale]="{format: 'DD MMM YYYY'}"
+          [autoApply]="true"
+          formControlName="daterange"
+          readonly
+          required
+        />
+      </mat-form-field>
     </div>
 
     <!-- кнопки -->
     <div class="absence-panel-actions">
-      <button
-        mat-flat-button
-        color="primary"
-        type="submit"
-      >
-        Применить
-      </button>
+      <div>
+        <button mat-flat-button color="primary" type="submit">
+          Применить
+        </button>
+        
+        <button mat-button (click)="cancel()">Отменить</button>
+      </div>
 
-      <button mat-button (click)="cancel()">Отменить</button>
+      <div>
+        <button mat-button (click)="delete()">Удалить</button>
+      </div>
     </div>
   </form>
 </div>

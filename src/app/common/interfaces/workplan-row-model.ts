@@ -1,5 +1,5 @@
 export interface WorkplanRowModel {
-  unid: string | null;
+  unid?: string | null;
   login: string | null;
   editDate: {
     startDate: string | null;

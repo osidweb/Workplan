@@ -1,0 +1,31 @@
+<div
+  class="user-info-panel"
+  [@panelContent]="animationState"
+  (@panelContent.start)="onAnimationStart($event)"
+  (@panelContent.done)="onAnimationDone($event)"
+>
+  <div class="user-info-panel-content">
+    <!-- заголовок -->
+    <div class="user-info-panel-header">{{panelData.user.name}}</div>
+
+    <!-- основное содержимое -->
+    <div class="user-info-panel-main">
+      <div class="user-info-panel-list">
+        <div class="user-info-panel-list-item">
+          <div class="title">должность</div>
+          <div class="info">{{panelData.user.workgroup}}</div>
+        </div>
+    
+        <div class="user-info-panel-list-item">
+          <div class="title">дата приема</div>
+          <div class="info">{{employmentDateFormatted}}</div>
+        </div>
+    
+        <div class="user-info-panel-list-item">
+          <div class="title">стаж</div>
+          <div class="info">{{experience}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

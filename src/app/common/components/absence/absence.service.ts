@@ -2,10 +2,10 @@ import { Injectable, Injector, ElementRef, ComponentRef } from '@angular/core';
 import { OverlayRef, Overlay, PositionStrategy } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 
-import { AbsenceRef } from './absence/absence-ref';
-import { AbsencePanelComponent } from './absence/absence-panel/absence-panel.component';
-import { ABSENCE_PANEL_DATA } from './absence/absence.tokens';
-import { DictionaryRecord } from '../interfaces/dictionary-record';
+import { AbsenceRef } from './absence-ref';
+import { AbsencePanelComponent } from './absence-panel/absence-panel.component';
+import { ABSENCE_PANEL_DATA } from './absence.tokens';
+import { DictionaryRecord } from '../../interfaces/dictionary-record';
 
 export interface IAbsencePanelData {
   overlayOrigin: any;
@@ -15,6 +15,7 @@ export interface IAbsencePanelData {
     startDate: string | null;
     endDate: string | null;
   };
+  editing: boolean;
 }
 
 interface AbsencePanelConfig {

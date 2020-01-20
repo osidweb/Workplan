@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
@@ -14,6 +14,7 @@ import { WorkplanUser } from '../common/interfaces/workplan-user';
 import { DictionaryService } from '../common/services/dictionary.service';
 import { WorkplanService } from '../common/services/workplan.service';
 import { WorkplanRowData } from '../common/interfaces/workplan-row-data';
+import { IUserInfoPanelData, UserInfoService } from '../common/components/user-info/user-info.service';
 
 @Component({
   selector: 'app-workplan',
@@ -63,7 +64,8 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
     private dictionaryService: DictionaryService,
-    private workplanService: WorkplanService
+    private workplanService: WorkplanService,
+    private userInfoService: UserInfoService
   ) {
     const BP = { Small: '(max-width: 767px)' };
     this.breakpointObserver.observe([
@@ -134,6 +136,18 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   showNextDate(): void {
     this.monthCounter++;
     this._showWorkplan(this.monthCounter, false);
+  }
+
+  // показать информацию о сотруднике
+  showUserInfoPanel(event: any, user: WorkplanUser): void {
+    const overlayOrigin: ElementRef = event.target;
+
+    const panelData: IUserInfoPanelData = {
+      overlayOrigin,
+      user
+    };
+
+    this.userInfoService.open(overlayOrigin, { data: panelData });
   }
 
 

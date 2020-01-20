@@ -7,7 +7,7 @@ moment.locale('ru', localization);
 
 import { AbsenceRef } from '../absence-ref';
 import { ABSENCE_PANEL_DATA } from '../absence.tokens';
-import { IAbsencePanelData } from '../../absence.service';
+import { IAbsencePanelData } from '../absence.service';
 
 @Component({
   selector: 'app-absence-panel',
@@ -35,7 +35,6 @@ export class AbsencePanelComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('panelData = ', this.panelData);
     const dateRangeValue = {
       startDate: moment(this.panelData.editDate.startDate, 'YYYY-MM-DD'),
       endDate: moment(this.panelData.editDate.endDate, 'YYYY-MM-DD')
@@ -45,7 +44,6 @@ export class AbsencePanelComponent implements OnInit {
       cause: new FormControl(this.panelData.cause, [Validators.required]),
       daterange: new FormControl(dateRangeValue, [Validators.required])
     });
-    console.log('this.absenceForm.value = ', this.absenceForm.value);
   }
 
   onAnimationStart(event: AnimationEvent): void {
@@ -60,17 +58,34 @@ export class AbsencePanelComponent implements OnInit {
     this.animationState = 'leave';
   }
 
+  // отменить
   cancel(): void {
     this.dialogRef.close(null);
   }
 
+  // сохранить
   save(): void {
-    console.log('form valid: ', this.absenceForm.valid);
+    if (this.absenceForm.valid) {
+
+      const data = {
+        act: this.panelData.editing ? 'edit' : 'create',
+        cause: this.absenceForm.value.cause,
+        editDate: this.absenceForm.value.daterange
+      };
+
+      this.dialogRef.close(data);
+    }
   }
 
-  // выбор причины отсутствия
-  changeCause(value): void {
-    console.log('changeCause: value = ', value);
+  // удалить
+  delete(): void {
+    const data = {
+      act: 'delete',
+      cause: this.absenceForm.value.cause,
+      editDate: this.absenceForm.value.daterange
+    };
+
+    this.dialogRef.close(data);
   }
 
 }

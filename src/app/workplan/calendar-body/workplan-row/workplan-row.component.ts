@@ -10,7 +10,7 @@ import { DictionaryRecord } from '../../../common/interfaces/dictionary-record';
 import { WorkplanRowModel } from 'src/app/common/interfaces/workplan-row-model';
 import { WorkplanService } from 'src/app/common/services/workplan.service';
 import { WorkplanRowData } from 'src/app/common/interfaces/workplan-row-data';
-import { IAbsencePanelData, AbsenceService } from 'src/app/common/components/absence.service';
+import { IAbsencePanelData, AbsenceService } from 'src/app/common/components/absence/absence.service';
 
 interface IRowData {
   dayInWeekNumber: number;
@@ -207,7 +207,7 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
           }
           // начальная дата редактируемого периода
           this.startDateEditing = this.model.editDate.startDate;
-          this.showAbsencePanel($event);
+          this.showAbsencePanel($event, true);
         } else {
           // если кликнули по обычной ячейке
           this.startActiveCellIndex = dayIndex;
@@ -240,7 +240,7 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
           this.model.login = this.user.login;
 
           this.renderer.addClass(elementDay, 'selected-start');
-          this.showAbsencePanel($event);
+          this.showAbsencePanel($event, false);
         }
         break;
     }
@@ -279,25 +279,33 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
   }
 
   // Всплывающее окно для заполнения причины и периода отсутствия
-  showAbsencePanel(event) {
+  showAbsencePanel(event: any, editing: boolean): void {
     const overlayOrigin: ElementRef = event.target;
-
-    console.log('this.model = ', this.model);
 
     const panelData: IAbsencePanelData = {
       overlayOrigin,
       causeList: this.causeList,
       cause: this.model.cause,
-      editDate: this.model.editDate
+      editDate: this.model.editDate,
+      editing
     };
 
     const absenceRef = this.absenceService.open(overlayOrigin, { data: panelData });
 
     // после закрытия панели
     absenceRef.afterClosed()
+      .pipe(takeUntil(this.destroyed))
       .subscribe(result => {
         if (result) {
-          // this._applyTagsList(result);
+          const rangeDate = {
+            startDate: moment(result.editDate.startDate).format('YYYY-MM-DD'),
+            endDate: moment(result.editDate.endDate).format('YYYY-MM-DD')
+          };
+
+          this.model.editDate = rangeDate;
+          this.model.cause = result.cause;
+
+          this.saveAbsence(result.act);
         } else {
           this.removeSelection();
         }
@@ -307,6 +315,95 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.absenceService.updatePosition(overlayOrigin);
     }, 400);
+  }
+
+  // сохранить данные о неявке
+  saveAbsence(act: string): void {
+    const data: WorkplanRowModel = {
+      login: this.model.login,
+      editDate: this.model.editDate,
+      cause: this.model.cause
+    };
+
+    if (!this.user.absence) {
+      this.user.absence = [];
+    }
+
+    switch (act) {
+      // создание новой неявки
+      case 'create':
+        this.workplanService.sendRequest({ rowModel: data, act} )
+          .pipe(takeUntil(this.destroyed))
+          .subscribe((res: any) => {
+            if (res.success) {
+              const newAbsence = {
+                unid: res.unid,
+                dateOfBeginning: this.model.editDate.startDate,
+                dateOfClosing: this.model.editDate.endDate,
+                cause: this.model.cause,
+              };
+
+              this.user.absence.push(newAbsence);
+              this.refreshRowData();
+              this.removeSelection();
+            }
+          });
+        break;
+
+      // редактирование существующей неявки
+      case 'edit':
+        data.unid = this.model.unid;
+
+        this.workplanService.sendRequest({ rowModel: data, act })
+          .pipe(takeUntil(this.destroyed))
+          .subscribe((res: any) => {
+            if (res.success) {
+              const startDateAbsence = this.startDateEditing;
+
+              const newAbsence = {
+                unid: this.model.unid,
+                dateOfBeginning: this.model.editDate.startDate,
+                dateOfClosing: this.model.editDate.endDate,
+                cause: this.model.cause,
+              };
+
+              for (let i = 0; i < this.user.absence.length; i++) {
+                const dStart = this.user.absence[i].dateOfBeginning;
+
+                if (moment(startDateAbsence).isSame(moment(dStart))) {
+                  this.user.absence.splice(i, 1);
+                }
+              }
+
+              this.user.absence.push(newAbsence);
+              this.refreshRowData();
+              this.removeSelection();
+            }
+          });
+        break;
+
+      // удаление неявки
+      case 'delete':
+        data.unid = this.model.unid;
+
+        this.workplanService.sendRequest({ rowModel: data, act })
+          .pipe(takeUntil(this.destroyed))
+          .subscribe((res: any) => {
+            if (res.success) {
+              const startDateAbsence = this.model.editDate.startDate;
+              for (let i = 0; i < this.user.absence.length; i++) {
+                const dStart = this.user.absence[i].dateOfBeginning;
+
+                if (moment(startDateAbsence).isSame(moment(dStart))) {
+                  this.user.absence.splice(i, 1);
+                }
+              }
+              this.refreshRowData();
+              this.removeSelection();
+            }
+          });
+        break;
+    }
   }
 
   ngOnDestroy() {

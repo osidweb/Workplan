@@ -22,7 +22,7 @@
         <div class="user-list-item" *ngFor="let item of usersList | keyvalue">
           <div class="workgroup-name">{{item.key}}</div>
 
-          <div class="user-name" *ngFor="let user of item.value">
+          <div class="user-name" *ngFor="let user of item.value" (click)="showUserInfoPanel($event, user)">
             {{user.name}}
           </div>
         </div>

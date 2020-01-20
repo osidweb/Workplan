@@ -17,7 +17,7 @@
     <div class="absence-panel-main">
       <mat-form-field>
         <mat-label>Причина отсутствия</mat-label>
-        <mat-select formControlName="cause" (selectionChange)="changeCause($event.value)" required>
+        <mat-select formControlName="cause" required>
           <mat-option *ngFor="let cause of panelData.causeList" [value]="cause.key">
             {{cause.value}}
           </mat-option>
@@ -52,7 +52,7 @@
       </div>
 
       <div>
-        <button mat-button (click)="delete()">Удалить</button>
+        <button *ngIf="panelData.editing" mat-button (click)="delete()">Удалить</button>
       </div>
     </div>
   </form>

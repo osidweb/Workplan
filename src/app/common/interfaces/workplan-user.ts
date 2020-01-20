@@ -10,4 +10,6 @@ export interface WorkplanUser {
     dateOfClosing: string;
     cause: string;
   }[];
+  employmentDate: string;
+  dismissDate?: string;
 }

@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 import { AbsencePanelComponent } from './absence-panel/absence-panel.component';
-import { AbsenceService } from '../absence.service';
+import { AbsenceService } from './absence.service';
 
 
 

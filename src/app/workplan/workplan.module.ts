@@ -6,6 +6,7 @@ import { WorkplanComponent } from './workplan.component';
 import { WorkplanCalendarHeaderComponent } from './calendar-header/workplan-calendar-header/workplan-calendar-header.component';
 import { WorkplanRowComponent } from './calendar-body/workplan-row/workplan-row.component';
 import { AbsenceModule } from '../common/components/absence/absence.module';
+import { UserInfoModule } from '../common/components/user-info/user-info.module';
 
 
 
@@ -19,7 +20,8 @@ import { AbsenceModule } from '../common/components/absence/absence.module';
     CommonModule,
     MatSelectModule,
     MatIconModule,
-    AbsenceModule
+    AbsenceModule,
+    UserInfoModule
   ],
   exports: [
     WorkplanComponent

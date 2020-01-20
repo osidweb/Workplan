@@ -45,7 +45,9 @@
             <mat-icon svgIcon="workplan:keyboard_arrow_right"></mat-icon>
           </div>
 
-          <div class="date-selection-name">{{dateInformation.month.name}}</div>
+          <div class="date-selection-name" (click)="showCalendar($event)">
+            {{dateInformation.month.name}}
+          </div>
         </div>
 
         <!-- заголовок календаря -->

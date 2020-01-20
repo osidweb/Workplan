@@ -15,6 +15,7 @@ import { DictionaryService } from '../common/services/dictionary.service';
 import { WorkplanService } from '../common/services/workplan.service';
 import { WorkplanRowData } from '../common/interfaces/workplan-row-data';
 import { IUserInfoPanelData, UserInfoService } from '../common/components/user-info/user-info.service';
+import { ICalendarPanelData, CalendarService } from '../common/components/calendar/calendar.service';
 
 @Component({
   selector: 'app-workplan',
@@ -65,7 +66,8 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private dictionaryService: DictionaryService,
     private workplanService: WorkplanService,
-    private userInfoService: UserInfoService
+    private userInfoService: UserInfoService,
+    private calendarService: CalendarService
   ) {
     const BP = { Small: '(max-width: 767px)' };
     this.breakpointObserver.observe([
@@ -83,7 +85,6 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.weekArray = moment.weekdaysShort();
     this.weekArray.splice(6, 0, this.weekArray.splice(0, 1)[0]);
-    // console.log('weekArray = ', this.weekArray);
 
     // получить выбранный отдел и дату, заполнить календарь
     forkJoin(
@@ -98,7 +99,6 @@ export class WorkplanComponent implements OnInit, OnDestroy {
           department: this.departmentList[1].key,
           date: selectedDate
         };
-        // console.log('отдел и дата: ', this.select);
 
         this.sdate = selectedDate.format('MM-YYYY');
 
@@ -126,16 +126,41 @@ export class WorkplanComponent implements OnInit, OnDestroy {
       });
   }
 
-  // показать График за предыдущую дату
+  // показать График за предыдущий месяц
   showPrevDate(): void {
     this.monthCounter--;
     this._showWorkplan(this.monthCounter, false);
   }
 
-  // показать График за следующую дату
+  // показать График за следующий месяц
   showNextDate(): void {
     this.monthCounter++;
     this._showWorkplan(this.monthCounter, false);
+  }
+
+  // показать календарь
+  showCalendar(event): void {
+    const overlayOrigin: ElementRef = event.target;
+
+    const panelData: ICalendarPanelData = {
+      overlayOrigin
+    };
+
+    const absenceRef = this.calendarService.open(overlayOrigin, { data: panelData });
+
+    // после закрытия панели
+    absenceRef.afterClosed()
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(result => {
+        if (result) {
+          console.log('result = ', result);
+        }
+      });
+
+    // обновить позицию панели
+    setTimeout(() => {
+      this.calendarService.updatePosition(overlayOrigin);
+    }, 400);
   }
 
   // показать информацию о сотруднике

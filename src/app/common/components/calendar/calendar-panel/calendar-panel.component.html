@@ -1,0 +1,8 @@
+<div
+  class="calendar-panel"
+  [@panelContent]="animationState"
+  (@panelContent.start)="onAnimationStart($event)"
+  (@panelContent.done)="onAnimationDone($event)"
+>
+  CALENDAR PANEL
+</div>

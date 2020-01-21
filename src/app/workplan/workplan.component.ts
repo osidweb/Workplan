@@ -143,7 +143,8 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     const overlayOrigin: ElementRef = event.target;
 
     const panelData: ICalendarPanelData = {
-      overlayOrigin
+      overlayOrigin,
+      selectDate: this.select.date
     };
 
     const absenceRef = this.calendarService.open(overlayOrigin, { data: panelData });

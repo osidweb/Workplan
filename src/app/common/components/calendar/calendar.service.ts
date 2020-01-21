@@ -5,9 +5,11 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { CalendarRef } from './calendar-ref';
 import { CalendarPanelComponent } from './calendar-panel/calendar-panel.component';
 import { CALENDAR_PANEL_DATA } from './calendar.tokens';
+import * as moment from 'moment';
 
 export interface ICalendarPanelData {
   overlayOrigin: any;
+  selectDate: moment.Moment;
 }
 
 interface CalendarPanelConfig {

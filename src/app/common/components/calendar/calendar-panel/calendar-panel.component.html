@@ -4,5 +4,9 @@
   (@panelContent.start)="onAnimationStart($event)"
   (@panelContent.done)="onAnimationDone($event)"
 >
-  CALENDAR PANEL
+  <!-- календарь -->
+  <div class="calendar-wrapper">
+    <mat-calendar #calendar [selected]="selectedDate" [startAt]="startDate" [minDate]="minDate"
+      (selectedChange)="dateChanged($event)"></mat-calendar>
+  </div>
 </div>

@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { CalendarRef } from '../calendar-ref';
 import { ICalendarPanelData } from '../calendar.service';
 import { CALENDAR_PANEL_DATA } from '../calendar.tokens';
+import { MatCalendar } from '@angular/material';
 
 @Component({
   selector: 'app-calendar-panel',
@@ -15,7 +16,7 @@ import { CALENDAR_PANEL_DATA } from '../calendar.tokens';
       state('void', style({ opacity: 0 })),
       state('enter', style({ opacity: 1 })),
       state('leave', style({ opacity: 0 })),
-      transition('* => *', animate('200ms cubic-bezier(0.55, 0, 0.55, 0.2)'))
+      transition('* => *', animate('0ms cubic-bezier(0.55, 0, 0.55, 0.2)'))
     ])
   ]
 })
@@ -23,12 +24,8 @@ export class CalendarPanelComponent implements OnInit {
   animationState: 'void' | 'enter' | 'leave' = 'enter';
   animationStateChanged = new EventEmitter<AnimationEvent>();
 
-  // дата выполнения просьбы
-  taskDate: string;
   // выбранная в календаре дата
   selectedDate: moment.Moment;
-  // отформатированная выбранная в календаре дата (для вывода на панель)
-  formattedSelectedDate: string;
   // на какой дате откроется календарь
   startDate: moment.Moment;
 
@@ -38,11 +35,7 @@ export class CalendarPanelComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('panelData = ', this.panelData);
-    // дата выполнения просьбы
-    // this.taskDate = this.panelData.dateModel;
     this.selectedDate = this.panelData.selectDate ? this.panelData.selectDate : null;
-    // this.formattedSelectedDate = this.taskDate ? this.selectedDate.format('DD MMM YYYY') : dateNotSelected;
     this.startDate = this.panelData.selectDate ? this.panelData.selectDate : moment();
   }
 
@@ -58,10 +51,9 @@ export class CalendarPanelComponent implements OnInit {
     this.animationState = 'leave';
   }
 
-  // выбрана дата в календаре
-  dateChanged(date: moment.Moment): void {
-    this.selectedDate = date;
-    this.formattedSelectedDate = this.selectedDate.format('DD MMM YYYY');
+  // выбрана дата в календаре (месяц)
+  monthSelectedHandler(date: moment.Moment): void {
+    this.dialogRef.close(date);
   }
 
 }

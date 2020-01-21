@@ -6,7 +6,13 @@
 >
   <!-- календарь -->
   <div class="calendar-wrapper">
-    <mat-calendar #calendar [selected]="selectedDate" [startAt]="startDate"
-      (selectedChange)="dateChanged($event)"></mat-calendar>
+    <mat-calendar
+      #calendar
+      panelClass="calendar-panel-month-picker"
+      startView="multi-year"
+      [selected]="selectedDate"
+      [startAt]="startDate"
+      (monthSelected)="monthSelectedHandler($event)"
+    ></mat-calendar>
   </div>
 </div>

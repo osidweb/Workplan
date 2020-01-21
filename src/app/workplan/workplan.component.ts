@@ -138,7 +138,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     this._showWorkplan(this.monthCounter, false);
   }
 
-  // показать календарь
+  // показать календарь и выбрать дату
   showCalendar(event): void {
     const overlayOrigin: ElementRef = event.target;
 
@@ -152,9 +152,10 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     // после закрытия панели
     absenceRef.afterClosed()
       .pipe(takeUntil(this.destroyed))
-      .subscribe(result => {
+      .subscribe((result: moment.Moment) => {
         if (result) {
-          console.log('result = ', result);
+          this.monthCounter = Math.ceil(result.diff(moment().startOf('month'), 'months', true));
+          this._showWorkplan(this.monthCounter, false);
         }
       });
 

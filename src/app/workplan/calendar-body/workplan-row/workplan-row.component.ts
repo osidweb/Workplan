@@ -11,6 +11,7 @@ import { WorkplanRowModel } from 'src/app/common/interfaces/workplan-row-model';
 import { WorkplanService } from 'src/app/common/services/workplan.service';
 import { WorkplanRowData } from 'src/app/common/interfaces/workplan-row-data';
 import { IAbsencePanelData, AbsenceService } from 'src/app/common/components/absence/absence.service';
+import { WorkplanRowPrototypeComponent } from '../workplan-row-prototype/workplan-row-prototype.component';
 
 interface IRowData {
   dayInWeekNumber: number;
@@ -24,48 +25,57 @@ interface IRowData {
   templateUrl: './workplan-row.component.html',
   styleUrls: ['./workplan-row.component.scss']
 })
-export class WorkplanRowComponent implements OnInit, OnDestroy {
-  @Input() userLogin: string;
-  @Input() causeList: DictionaryRecord[];
+export class WorkplanRowComponent extends WorkplanRowPrototypeComponent implements OnInit, OnDestroy {
+  // @Input() userLogin: string;
+  // @Input() causeList: DictionaryRecord[];
 
-  private destroyed = new Subject();
+  // private destroyed = new Subject();
   listenFuncMousedown;
 
   // элемент обертка с классом 'line'
   lineElement: ElementRef;
 
-  selectedDate: any;
-  daysInMonth: DayOfWeek[];
-  user: WorkplanUser;
+  // selectedDate: any;
+  // daysInMonth: DayOfWeek[];
+  // user: WorkplanUser;
 
-  clickCount = 0;
-  clickOutsideElement = false;
+  // clickCount = 0;
+  // clickOutsideElement = false;
 
-  model: WorkplanRowModel = {
-    unid: null,
-    login: null,
-    editDate: {
-      startDate: null,
-      endDate: null,
-    },
-    cause: null
-  };
+  // model: WorkplanRowModel = {
+  //   unid: null,
+  //   login: null,
+  //   editDate: {
+  //     startDate: null,
+  //     endDate: null,
+  //   },
+  //   cause: null
+  // };
 
-  startDateEditing: string | null = null;
-  startActiveCellIndex: number | null = null;
-  startCellIndex: number | null = null;
-  endCellIndex: number | null = null;
+  // startDateEditing: string | null = null;
+  // startActiveCellIndex: number | null = null;
+  // startCellIndex: number | null = null;
+  // endCellIndex: number | null = null;
 
   rowData: IRowData[] = [];
 
   constructor(
-    private eref: ElementRef,
-    private renderer: Renderer2,
-    private workplanService: WorkplanService,
-    private absenceService: AbsenceService
-  ) { }
+    eref: ElementRef,
+    renderer: Renderer2,
+    workplanService: WorkplanService,
+    absenceService: AbsenceService
+  ) {
+    super(
+      eref,
+      renderer,
+      workplanService,
+      absenceService
+    );
+  }
 
   ngOnInit() {
+    super.ngOnInit();
+
     // получить элемент обертку с классом 'line'
     this.lineElement = this.eref.nativeElement.querySelector('.line');
 
@@ -407,8 +417,8 @@ export class WorkplanRowComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroyed.next(null);
-    this.destroyed.complete();
+    // this.destroyed.next(null);
+    // this.destroyed.complete();
 
     this.listenFuncMousedown();
   }

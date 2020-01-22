@@ -1,0 +1,92 @@
+@import '~src/scss/variables';
+
+.mobile-calendar-body {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.mobile-calendar-line {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mobile-calendar-line + .mobile-calendar-line {
+  margin-top: 5px;
+}
+
+.day {
+  width: 100%;
+  height: 48px;
+  text-align: center;
+  line-height: 48px;
+  font-size: 16px;
+}
+
+.not-selected-month {
+  color: #d1d1d1;
+}
+
+// выделение ячеек
+.selected:not(.selected-end),
+.selected-start {
+  color: $white;
+}
+
+.selected-start:not(.selected) {
+  &:before {
+    border-radius: 23px;
+  }
+}
+
+.selected,
+.selected-start {
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translate(0, -50%);
+    width: 100%;
+    height: 46px;
+    background-color: $blue;
+    z-index: -1;
+  }
+}
+
+.selected-start {
+  &:before {
+    border-radius: 0;
+    border-top-left-radius: 23px 23px;
+    border-bottom-left-radius: 23px 23px;
+  }
+
+  &.selected-end {
+    &:after {
+      display: none;
+    }
+  }
+}
+
+.selected-end {
+  &:before {
+    border-top-right-radius: 23px 23px;
+    border-bottom-right-radius: 23px 23px;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    transform: translate(0, -50%);
+    width: calc(100% - 4px);
+    height: 42px;
+    border-radius: 23px;
+    background-color: $white;
+    z-index: -1;
+  }
+}

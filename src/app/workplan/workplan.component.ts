@@ -113,11 +113,22 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   }
 
   // получить сотрудников по отделу за период
-  getUsers(department: string, date: string) {
+  getUsers(department: string, date: string): void {
+    this.select.department = department;
+
     this.workplanService.getUsers({ department, date })
       .pipe(takeUntil(this.destroyed))
       .subscribe((res: WorkplanUser[]) => {
         this.notGroupedUserList = res;
+
+        // ДЛЯ МОБИЛЬНОЙ ВЕРСИИ
+        // первоначальное значение выбранного сотрудника
+        // (равно либо ранее сделанному выбору, либо первому в списке сотрудников)
+        const findedUser = this.select.user
+          ? _.findWhere(this.notGroupedUserList, { login: this.select.user.login })
+          : null;
+        this.select.user = findedUser ? this.select.user : res[0];
+
         this.usersList = _.groupBy(res, (user: WorkplanUser) => {
           return user.workgroup;
         });
@@ -129,13 +140,13 @@ export class WorkplanComponent implements OnInit, OnDestroy {
   // показать График за предыдущий месяц
   showPrevDate(): void {
     this.monthCounter--;
-    this._showWorkplan(this.monthCounter, false);
+    this._showWorkplan(this.monthCounter, this.isMobile);
   }
 
   // показать График за следующий месяц
   showNextDate(): void {
     this.monthCounter++;
-    this._showWorkplan(this.monthCounter, false);
+    this._showWorkplan(this.monthCounter, this.isMobile);
   }
 
   // показать календарь и выбрать дату
@@ -179,6 +190,16 @@ export class WorkplanComponent implements OnInit, OnDestroy {
 
 
 
+  // ДЛЯ МОБИЛЬНОЙ ВЕРСИИ
+  // выбор сотрудника из списка
+  selectUser(userLogin: string): void {
+    this.select.user = _.findWhere(this.notGroupedUserList, { login: userLogin});
+
+    this._refreshRowData();
+  }
+
+
+
   // получить выбранную дату (текущая дата, скорректированная на счетчик месяца)
   private _getSelectedDate(mCounter: number): Observable<moment.Moment> {
     let currDate: moment.Moment = null;
@@ -188,6 +209,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
         currDate = moment().add(mCounter, 'months');
 
         this.dateInformation = {
+          momentDate: currDate.format('YYYY-MM-DD'),
           firstDay: {
             shortName: moment().add(mCounter, 'months').startOf('month').format('dd'),
             involCalendarFormat: moment().add(mCounter, 'months').startOf('month').format('ddd D.M')
@@ -203,6 +225,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
         currDate = moment();
 
         this.dateInformation = {
+          momentDate: currDate.format('YYYY-MM-DD'),
           firstDay: {
             shortName: moment().startOf('month').format('dd'),
             involCalendarFormat: moment().startOf('month').format('ddd D.M')

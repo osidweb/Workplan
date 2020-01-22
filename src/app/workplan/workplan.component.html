@@ -86,6 +86,74 @@
   
   <!-- для экранов менее 768px -->
   <div class="container-mobile" *ngIf="isMobile">
-    MOBILE
+    
+    <!-- верхняя часть -->
+    <div class="mobile-first-part">
+
+      <!-- выбор отдела -->
+      <div class="mobile-departments">
+        <mat-form-field floatLabel="never">
+          <mat-select [value]="select.department" (selectionChange)="getUsers($event.value, sdate)">
+            <mat-option *ngFor="let department of departmentList" [value]="department.key">
+              {{department.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- выбор сотрудника -->
+      <div class="mobile-users">
+        <mat-form-field floatLabel="never">
+          <mat-select [value]="select.user.login" (selectionChange)="selectUser($event.value)">
+            <mat-option *ngFor="let user of notGroupedUserList" [value]="user.login">
+              {{user.lastName}} {{user.firstName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- средняя часть -->
+    <div class="mobile-second-part">
+
+      <!-- выбор даты -->
+      <div class="mobile-date-selection">
+        <div class="mobile-date-selection-arrow" (click)="showPrevDate()">
+          <mat-icon svgIcon="workplan:keyboard_arrow_left"></mat-icon>
+        </div>
+
+        <div class="mobile-date-selection-name" (click)="showCalendar($event)">
+          {{dateInformation.month.name}}
+        </div>
+      
+        <div class="mobile-date-selection-arrow" (click)="showNextDate()">
+          <mat-icon svgIcon="workplan:keyboard_arrow_right"></mat-icon>
+        </div>
+      </div>
+
+      <!-- календарь -->
+      <div class="mobile-calendar">
+        
+        <!-- заголовок -->
+        <div class="mobile-calendar-header">
+          <div class="item" *ngFor="let item of weekArray">
+            {{item}}
+          </div>
+        </div>
+
+        <!-- Тело календаря -->
+        <div class="mobile-calendar-body">
+          <app-workplan-row-mobile
+            [userLogin]="select.user.login" 
+            [causeList]="dictCause"
+          ></app-workplan-row-mobile>
+        </div>
+      </div>
+    </div>
+
+    <!-- нижняя часть -->
+    <div class="mobile-third-part">
+      *СБ и ВС — выходные дни, все остальные — рабочие.
+    </div>
   </div>
 </div>

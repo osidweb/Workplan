@@ -113,3 +113,61 @@
   top: 120px;
   left: initial;
 }
+
+
+
+// ДЛЯ МОБИЛЬНОЙ ВЕРСИИ
+// для экранов менее 768px
+::ng-deep.mobile-first-part {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 15px;
+  border-bottom: 1px solid $border-color;
+
+  .mat-form-field-infix {
+    width: 140px;
+  }
+}
+
+// выбор даты
+.mobile-date-selection {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+}
+
+.mobile-date-selection-arrow {
+  width: 24px;
+  height: 24px;
+}
+
+.mobile-date-selection-name {
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: capitalize;
+}
+
+// календарь
+.mobile-calendar-header {
+  display: flex;
+
+  .item {
+    width: 100%;
+    height: 30px;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 600;
+    line-height: 30px;
+
+    &:nth-child(6),
+    &:nth-child(7) {
+      color: $red;
+    }
+  }
+}
+
+.mobile-third-part {
+  padding: 15px;
+  border-top: 1px solid $border-color;
+}

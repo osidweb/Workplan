@@ -8,6 +8,8 @@ import { WorkplanRowComponent } from './calendar-body/workplan-row/workplan-row.
 import { AbsenceModule } from '../common/components/absence/absence.module';
 import { UserInfoModule } from '../common/components/user-info/user-info.module';
 import { CalendarModule } from '../common/components/calendar/calendar.module';
+import { WorkplanRowMobileComponent } from './calendar-body/workplan-row-mobile/workplan-row-mobile.component';
+import { WorkplanRowPrototypeComponent } from './calendar-body/workplan-row-prototype/workplan-row-prototype.component';
 
 
 
@@ -15,7 +17,9 @@ import { CalendarModule } from '../common/components/calendar/calendar.module';
   declarations: [
     WorkplanComponent,
     WorkplanCalendarHeaderComponent,
-    WorkplanRowComponent
+    WorkplanRowComponent,
+    WorkplanRowMobileComponent,
+    WorkplanRowPrototypeComponent
   ],
   imports: [
     CommonModule,

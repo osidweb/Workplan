@@ -1,0 +1,33 @@
+<div class="mobile-calendar-body">
+  <div class="mobile-calendar-line" *ngFor="let items of rowData">
+
+    <div
+      class="day"
+      *ngFor="let day of items; let i = index"
+      [ngClass]="{'not-selected-month': !day.selectedMonth,
+                  'absence': day.absence,
+                 'selected-start': day.selectedStart,
+                 'selected': day.selected,
+                 'selected-end': day.selectedEnd}"
+      (click)="changeWorkplan($event, day)"
+    >
+      {{day.number}}
+    </div>
+
+  </div>
+
+  <!-- Информация о неявках -->
+  <!-- <div class="transcript-message-wrapper">
+    <div class="mobile-calendar-line" ng-repeat="item in rowData track by $index">
+
+      <div class="day" ng-repeat="day in item track by $index">
+
+        <div class="transcript-message" ng-if="day.absenceStart" ng-style="getStyle(day.absenceLength)"
+          ng-class="{'hide': day.selected}">
+          {{day.cause}}
+        </div>
+
+      </div>
+    </div>
+  </div> -->
+</div>

@@ -8,6 +8,7 @@ import { WorkplanService } from 'src/app/common/services/workplan.service';
 import { AbsenceService, IAbsencePanelData } from 'src/app/common/components/absence/absence.service';
 import { WorkplanRowData } from 'src/app/common/interfaces/workplan-row-data';
 import { WorkplanUser } from 'src/app/common/interfaces/workplan-user';
+import { WorkplanRowModel } from 'src/app/common/interfaces/workplan-row-model';
 
 interface IRowData {
   number: number;
@@ -278,7 +279,7 @@ export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent im
           this.model.editDate = rangeDate;
           this.model.cause = result.cause;
 
-          // this.saveAbsence(result.act);
+          this.saveAbsence(result.act);
         } else {
           this.removeSelection();
         }
@@ -288,6 +289,109 @@ export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent im
     setTimeout(() => {
       this.absenceService.updatePosition(overlayOrigin);
     }, 400);
+  }
+
+  // передать данные о неявках на сервер
+  saveAbsence(act: string): void {
+    const data: WorkplanRowModel = {
+      login: this.model.login,
+      editDate: this.model.editDate,
+      cause: this.model.cause
+    };
+
+    if (!this.user.absence) {
+      this.user.absence = [];
+    }
+
+    switch (act) {
+      // создание новой неявки
+      case 'create':
+        this.workplanService.sendRequest({ rowModel: data, act })
+          .pipe(takeUntil(this.destroyed))
+          .subscribe((res: any) => {
+            if (res.success) {
+              const newAbsence = {
+                unid: res.unid,
+                dateOfBeginning: this.model.editDate.startDate,
+                dateOfClosing: this.model.editDate.endDate,
+                cause: this.model.cause,
+              };
+
+              this.user.absence.push(newAbsence);
+              this.refreshRowData();
+              this.removeSelection();
+            }
+          });
+        break;
+
+      // редактирование существующей неявки
+      case 'edit':
+        data.unid = this.model.unid;
+
+        this.workplanService.sendRequest({ rowModel: data, act })
+          .pipe(takeUntil(this.destroyed))
+          .subscribe((res: any) => {
+            if (res.success) {
+              const startDateAbsence = this.model.editDate.startDate;
+
+              const newAbsence = {
+                unid: this.model.unid,
+                dateOfBeginning: this.model.editDate.startDate,
+                dateOfClosing: this.model.editDate.endDate,
+                cause: this.model.cause,
+              };
+
+              for (let i = 0; i < this.user.absence.length; i++) {
+                const dStart = this.user.absence[i].dateOfBeginning;
+
+                if (moment(startDateAbsence).isSame(moment(dStart))) {
+                  this.user.absence.splice(i, 1);
+                }
+              }
+
+              this.user.absence.push(newAbsence);
+              this.refreshRowData();
+              this.removeSelection();
+            }
+          });
+        break;
+
+      // удаление неявки
+      case 'delete':
+        data.unid = this.model.unid;
+
+        this.workplanService.sendRequest({ rowModel: data, act })
+          .pipe(takeUntil(this.destroyed))
+          .subscribe((res: any) => {
+            if (res.success) {
+              const startDateAbsence = this.model.editDate.startDate;
+              for (let i = 0; i < this.user.absence.length; i++) {
+                const dStart = this.user.absence[i].dateOfBeginning;
+
+                if (moment(startDateAbsence).isSame(moment(dStart))) {
+                  this.user.absence.splice(i, 1);
+                }
+              }
+              this.refreshRowData();
+              this.removeSelection();
+            }
+          });
+        break;
+    }
+  }
+
+  // установить ширину элемента с описанием неявки
+  getStyle(quantity: number): number {
+    // выбрать любую ячейку, чтобы определить ее ширину
+    const calendarCell = this.eref.nativeElement.querySelector('.day');
+    let widthSize = 0;
+
+    if (calendarCell) {
+      widthSize = calendarCell.getBoundingClientRect().width;
+      widthSize = widthSize * quantity;
+    }
+
+    return widthSize;
   }
 
 

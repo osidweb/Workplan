@@ -3,7 +3,7 @@
 
     <div
       class="day"
-      *ngFor="let day of items; let i = index"
+      *ngFor="let day of items"
       [ngClass]="{'not-selected-month': !day.selectedMonth,
                   'absence': day.absence,
                  'selected-start': day.selectedStart,
@@ -17,17 +17,21 @@
   </div>
 
   <!-- Информация о неявках -->
-  <!-- <div class="transcript-message-wrapper">
-    <div class="mobile-calendar-line" ng-repeat="item in rowData track by $index">
+  <div class="transcript-message-wrapper">
+    <div class="mobile-calendar-line" *ngFor="let items of rowData">
 
-      <div class="day" ng-repeat="day in item track by $index">
+      <div class="day" *ngFor="let day of items">
 
-        <div class="transcript-message" ng-if="day.absenceStart" ng-style="getStyle(day.absenceLength)"
-          ng-class="{'hide': day.selected}">
+        <div
+          class="transcript-message"
+          *ngIf="day.absenceStart"
+          [ngStyle]="{'width.px': getStyle(day.absenceLength)}"
+          [ngClass]="{'hide': day.selected}"
+        >
           {{day.cause}}
         </div>
 
       </div>
     </div>
-  </div> -->
+  </div>
 </div>

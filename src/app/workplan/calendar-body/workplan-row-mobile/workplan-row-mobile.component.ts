@@ -63,6 +63,14 @@ export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent im
 
         this.refreshRowData();
       });
+
+    // клик вне выделямых ячеек в строке
+    this.listenFuncMousedown = this.renderer.listen('document', 'mousedown', (event) => {
+
+      if (!this.eref.nativeElement.contains(event.target) && this.clickCount === 1) {
+        this.removeSelection();
+      }
+    });
   }
 
   // обновить данные Рабочего графика для сотрудника
@@ -118,12 +126,14 @@ export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent im
 
   // изменить табель
   changeWorkplan(event: any, day: IRowData): void {
-    this.clickCount = (this.clickCount < 2)
-      ? this.clickCount++
-      : this.clickCount = 1;
+    if (this.clickCount < 2) {
+      this.clickCount++;
+    } else {
+      this.clickCount = 1;
+    }
 
-    const cellDate = day.date;
     const cellAbsence = event.target.classList.contains('absence');
+    console.log('changeWorkplan: cellAbsence = ', cellAbsence, 'this.clickCount = ', this.clickCount);
 
     // обработка кликов
     switch (this.clickCount) {
@@ -198,10 +208,12 @@ export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent im
             }
 
             // проверка: попала в выбранный период существующая неявка
-            for (const absence of this.user.absence) {
-              if (absence.dateOfBeginning > this.startDate && absence.dateOfBeginning < this.endDate) {
-                notAbsence = false;
-                break;
+            if (this.user && 'absence' in this.user && this.user.absence.length > 0) {
+              for (const absence of this.user.absence) {
+                if (absence.dateOfBeginning > this.startDate && absence.dateOfBeginning < this.endDate) {
+                  notAbsence = false;
+                  break;
+                }
               }
             }
 

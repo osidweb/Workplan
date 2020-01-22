@@ -25,12 +25,12 @@ interface IRowData {
   templateUrl: './workplan-row.component.html',
   styleUrls: ['./workplan-row.component.scss']
 })
-export class WorkplanRowComponent extends WorkplanRowPrototypeComponent implements OnInit, OnDestroy {
+export class WorkplanRowComponent extends WorkplanRowPrototypeComponent implements OnInit {
   // @Input() userLogin: string;
   // @Input() causeList: DictionaryRecord[];
 
   // private destroyed = new Subject();
-  listenFuncMousedown;
+  // listenFuncMousedown;
 
   // элемент обертка с классом 'line'
   lineElement: ElementRef;
@@ -416,12 +416,12 @@ export class WorkplanRowComponent extends WorkplanRowPrototypeComponent implemen
     }
   }
 
-  ngOnDestroy() {
-    // this.destroyed.next(null);
-    // this.destroyed.complete();
+  // ngOnDestroy() {
+  //   // this.destroyed.next(null);
+  //   // this.destroyed.complete();
 
-    this.listenFuncMousedown();
-  }
+  //   this.listenFuncMousedown();
+  // }
 
 
 

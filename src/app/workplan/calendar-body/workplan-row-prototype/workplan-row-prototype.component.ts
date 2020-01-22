@@ -26,6 +26,8 @@ export class WorkplanRowPrototypeComponent implements OnInit, OnDestroy {
 
   destroyed = new Subject();
 
+  listenFuncMousedown;
+
   selectedDate: any;
   daysInMonth: DayOfWeek[];
   user: WorkplanUser;
@@ -64,7 +66,7 @@ export class WorkplanRowPrototypeComponent implements OnInit, OnDestroy {
     this.destroyed.next(null);
     this.destroyed.complete();
 
-    // this.listenFuncMousedown();
+    this.listenFuncMousedown();
   }
 
 }

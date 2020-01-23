@@ -106,6 +106,10 @@
 .right-part {
   position: relative;
   padding-left: 20px;
+
+  @media (max-width: 1399px) {
+    display: none;
+  }
 }
 
 .right-part-list {

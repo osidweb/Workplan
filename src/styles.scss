@@ -1,4 +1,5 @@
 @import '~src/scss/app-theme.scss';
+@import '~src/scss/variables';
 
 html, body { height: 100%; }
 
@@ -8,5 +9,7 @@ body {
 }
 
 .md-drppicker.double {
-  min-width: 550px;
+  @media (min-width: $screen-smd) {
+    min-width: 550px;
+  }
 }

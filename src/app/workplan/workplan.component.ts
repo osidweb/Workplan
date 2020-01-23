@@ -119,7 +119,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     this.workplanService.getUsers({ department, date })
       .pipe(takeUntil(this.destroyed))
       .subscribe((res: WorkplanUser[]) => {
-        this.notGroupedUserList = res;
+        this.notGroupedUserList = _.sortBy(res, 'lastName');
 
         // ДЛЯ МОБИЛЬНОЙ ВЕРСИИ
         // первоначальное значение выбранного сотрудника
@@ -127,7 +127,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
         const findedUser = this.select.user
           ? _.findWhere(this.notGroupedUserList, { login: this.select.user.login })
           : null;
-        this.select.user = findedUser ? this.select.user : res[0];
+        this.select.user = findedUser ? this.select.user : _.sortBy(res, 'lastName')[0];
 
         this.usersList = _.groupBy(res, (user: WorkplanUser) => {
           return user.workgroup;
@@ -249,7 +249,8 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     const rowData: WorkplanRowData = {
       selectedDate: this.dateInformation,
       daysInMonth: this.daysArray,
-      users: this.notGroupedUserList
+      users: this.notGroupedUserList,
+      user: this.select.user
     };
     this.workplanService.changeWorkplanData(rowData);
   }

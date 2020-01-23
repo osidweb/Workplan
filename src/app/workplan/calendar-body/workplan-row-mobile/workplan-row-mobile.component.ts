@@ -1,14 +1,16 @@
-import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2, Input, OnDestroy } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import * as moment from 'moment';
 import { _ } from 'underscore';
 
-import { WorkplanRowPrototypeComponent } from '../workplan-row-prototype/workplan-row-prototype.component';
 import { WorkplanService } from 'src/app/common/services/workplan.service';
 import { AbsenceService, IAbsencePanelData } from 'src/app/common/components/absence/absence.service';
 import { WorkplanRowData } from 'src/app/common/interfaces/workplan-row-data';
 import { WorkplanUser } from 'src/app/common/interfaces/workplan-user';
 import { WorkplanRowModel } from 'src/app/common/interfaces/workplan-row-model';
+import { DictionaryRecord } from 'src/app/common/interfaces/dictionary-record';
+import { DayOfWeek } from 'src/app/common/interfaces/day-of-week';
 
 interface IRowData {
   number: number;
@@ -29,7 +31,30 @@ interface IRowData {
   templateUrl: './workplan-row-mobile.component.html',
   styleUrls: ['./workplan-row-mobile.component.scss']
 })
-export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent implements OnInit {
+export class WorkplanRowMobileComponent implements OnInit, OnDestroy {
+  @Input() causeList: DictionaryRecord[];
+
+  destroyed = new Subject();
+
+  listenFuncMousedown;
+
+  selectedDate: any;
+  daysInMonth: DayOfWeek[];
+  user: WorkplanUser;
+
+  clickCount = 0;
+  clickOutsideElement = false;
+
+  model: WorkplanRowModel = {
+    unid: null,
+    login: null,
+    editDate: {
+      startDate: null,
+      endDate: null,
+    },
+    cause: null
+  };
+
   dateInfo: any;
   rowData: IRowData[][] = [];
 
@@ -39,28 +64,19 @@ export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent im
   endDate: string = null;
 
   constructor(
-    eref: ElementRef,
-    renderer: Renderer2,
-    workplanService: WorkplanService,
-    absenceService: AbsenceService
-  ) {
-    super(
-      eref,
-      renderer,
-      workplanService,
-      absenceService
-    );
-  }
+    private eref: ElementRef,
+    private renderer: Renderer2,
+    private workplanService: WorkplanService,
+    private absenceService: AbsenceService
+  ) {}
 
   ngOnInit() {
-    super.ngOnInit();
-
     // подписка на изменения даты/сотрудников
     this.workplanService.workplanDataChanges
       .pipe(takeUntil(this.destroyed))
       .subscribe((wpData: WorkplanRowData) => {
         this.selectedDate = wpData.selectedDate;
-        this.user = _.findWhere(wpData.users, { login: this.userLogin });
+        this.user = wpData.user;
 
         this.refreshRowData();
       });
@@ -134,7 +150,6 @@ export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent im
     }
 
     const cellAbsence = event.target.classList.contains('absence');
-    console.log('changeWorkplan: cellAbsence = ', cellAbsence, 'this.clickCount = ', this.clickCount);
 
     // обработка кликов
     switch (this.clickCount) {
@@ -392,6 +407,13 @@ export class WorkplanRowMobileComponent extends WorkplanRowPrototypeComponent im
     }
 
     return widthSize;
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next(null);
+    this.destroyed.complete();
+
+    this.listenFuncMousedown();
   }
 
 

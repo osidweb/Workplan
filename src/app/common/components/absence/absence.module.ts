@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatSelectModule, MatButtonModule, MatInputModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 import { AbsencePanelComponent } from './absence-panel/absence-panel.component';
 import { AbsenceService } from './absence.service';
+import { DaterangeInlineModule } from '../daterange-inline/daterange-inline.module';
 
 
 
@@ -22,7 +22,7 @@ import { AbsenceService } from './absence.service';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxDaterangepickerMd.forRoot()
+    DaterangeInlineModule
   ],
   exports: [
     AbsencePanelComponent

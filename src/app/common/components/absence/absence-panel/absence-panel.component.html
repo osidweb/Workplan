@@ -31,13 +31,10 @@
         <input
           type="text"
           matInput
-          ngxDaterangepickerMd
-          [locale]="{format: 'DD MMM YYYY'}"
-          [autoApply]="true"
           formControlName="daterange"
+          (click)="showDaterange($event)"
           readonly
-          required
-        />
+          required />
       </mat-form-field>
     </div>
 

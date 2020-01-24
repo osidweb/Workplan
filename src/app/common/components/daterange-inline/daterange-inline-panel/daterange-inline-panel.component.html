@@ -1,0 +1,14 @@
+<div
+  class="daterange-inline-panel"
+  [@panelContent]="animationState"
+  (@panelContent.start)="onAnimationStart($event)"
+  (@panelContent.done)="onAnimationDone($event)"
+>
+  <ngx-daterangepicker-material
+    (choosedDate)="choosedDate($event)"
+    [locale]="{format: 'DD MMM YYYY'}"
+    [autoApply]="true"
+    [startDate]="panelData.editDate.startDate"
+    [endDate]="panelData.editDate.endDate"
+  ></ngx-daterangepicker-material>
+</div>

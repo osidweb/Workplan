@@ -18,66 +18,44 @@ export class WorkplanService {
     {
       department: '1',
       users: [
-        { login: 'SKukresh', name: 'Сергей Кукреш', firstName: 'Сергей', lastName: 'Кукреш', workgroup: 'Генеральный директор',
-          employmentDate: '2000-01-01' },
-        { login: 'echernysheva', name: 'Екатерина Чернышева', firstName: 'Екатерина', lastName: 'Чернышева', workgroup: 'Бухгалтер',
-          employmentDate: '2005-01-01'},
-        { login: 'easorgina', name: 'Елена Асоргина', firstName: 'Елена', lastName: 'Асоргина', workgroup: 'Финансовый директор',
-          employmentDate: '2000-02-01',
+        { login: 'iivanov1972', name: 'Иванов Иван', workgroup: 'Генеральный директор', employmentDate: '2000-01-01' },
+        { login: 'epetrova1970', name: 'Петрова Екатерина', workgroup: 'Бухгалтер', employmentDate: '2005-01-01' },
+        { login: 'ekruglova1975', name: 'Круглова Елена', workgroup: 'Финансовый директор', employmentDate: '2000-02-01',
           absence: [
-            {
-              unid: '15749309175DDF89E55E3F1157494040', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'k'
-            }
+            { unid: '15749309175DDF89E55E3F1157494040', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'k' }
           ]
         },
-        { login: 'vnagornaya', name: 'Виктория Нагорная', firstName: 'Виктория', lastName: 'Нагорная', workgroup: 'Коммерческий директор',
-          employmentDate: '2000-03-01'}
+        { login: 'vnikitina1978', name: 'Никитина Виктория', workgroup: 'Коммерческий директор', employmentDate: '2000-03-01' }
       ]
     },
     {
       department: '2',
       users: [
-        { login: 'otrofimov', name: 'Олег Трофимов', firstName: 'Олег', lastName: 'Трофимов', workgroup: 'Дизайнер',
-          employmentDate: '2005-02-01' },
-        { login: 'nezan3319', name: 'Никита Езан', firstName: 'Никита', lastName: 'Езан', workgroup: 'FrontEnd разработчик',
-          employmentDate: '2019-02-01' },
-        { login: 'kfedorov', name: 'Кирилл Федоров', firstName: 'Кирилл', lastName: 'Федоров', workgroup: 'Портал дев лид',
-          employmentDate: '2004-05-01' },
-        { login: 'ddudarev', name: 'Дмитрий Дударев', firstName: 'Дмитрий', lastName: 'Дударев', workgroup: 'PHP программист',
-          employmentDate: '2005-09-01' },
-        { login: 'igospadarev', name: 'Илья Госпадарев', firstName: 'Илья', lastName: 'Госпадарев', workgroup: 'PHP программист',
-          employmentDate: '2007-08-01' },
-        { login: 'osidorova', name: 'Оксана Сидорова', firstName: 'Оксана', lastName: 'Сидорова', workgroup: 'FrontEnd разработчик',
-          employmentDate: '2017-07-11',
+        { login: 'ozaharov1990', name: 'Захаров Олег', workgroup: 'Дизайнер', employmentDate: '2005-02-01' },
+        { login: 'nmihailov3319', name: 'Михайлов Никита', workgroup: 'FrontEnd разработчик', employmentDate: '2019-02-01' },
+        { login: 'kmorozov1983', name: 'Морозов Кирилл', workgroup: 'Портал девлид', employmentDate: '2004-05-01' },
+        { login: 'dalekseev1985', name: 'Алексеев Дмитрий', workgroup: 'PHP программист', employmentDate: '2005-09-01' },
+        { login: 'ivolkov1987', name: 'Волков Илья', workgroup: 'PHP программист', employmentDate: '2007-08-01' },
+        { login: 'osidorova1980', name: 'Сидорова Оксана', workgroup: 'FrontEnd разработчик', employmentDate: '2017-07-11',
           absence: [
-            {
-              unid: '15749309175DDF89E55E3F1157493091', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'o'
-            }
+            { unid: '15749309175DDF89E55E3F1157493091', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'o' }
           ]
         },
-        { login: 'vkruglov', name: 'Валерий Круглов', firstName: 'Валерий', lastName: 'Круглов', workgroup: 'PHP программист',
-          employmentDate: '2020-01-01' }
+        { login: 'vegorov1989', name: 'Егоров Валерий', workgroup: 'PHP программист', employmentDate: '2020-01-01' }
       ]
     },
     {
       department: '3',
       users: [
-        { login: 'akroyshner', name: 'Алия Кройшнер', firstName: 'Алия', lastName: 'Кройшнер', workgroup: 'Менеджер по продажам',
-          employmentDate: '2005-02-01',
+        { login: 'apavlova1983', name: 'Павлова Алия', workgroup: 'Менеджер по продажам', employmentDate: '2005-02-01',
           absence: [
-            {
-              unid: '15749309175DDF89E55E3F1157495050', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'b'
-            }
+            { unid: '15749309175DDF89E55E3F1157495050', dateOfBeginning: this.dateBegin, dateOfClosing: this.dateClose, cause: 'b' }
           ]
         },
-        { login: 'akadurkina17519', name: 'Анастасия Кадуркина', firstName: 'Анастасия',
-          lastName: 'Кадуркина', workgroup: 'Менеджер по продажам', employmentDate: '2015-02-01' },
-        { login: 'nostanina25719', name: 'Наталья Останина', firstName: 'Наталья',
-          lastName: 'Останина', workgroup: 'Менеджер по продажам', employmentDate: '2012-03-11' },
-        { login: 'mkachmaz12919', name: 'Марина Качмаз', firstName: 'Марина', lastName: 'Качмаз', workgroup: 'Менеджер по продажам',
-          employmentDate: '2005-05-21' },
-        { login: 'ksoloveva51119', name: 'Кристина Соловьева', firstName: 'Кристина',
-          lastName: 'Соловьева', workgroup: 'Менеджер по продажам', employmentDate: '2016-04-15' }
+        { login: 'akozlova17519', name: 'Козлова Анастасия', workgroup: 'Менеджер по продажам', employmentDate: '2015-02-01' },
+        { login: 'nstepanova25719', name: 'Степанова Наталья',  workgroup: 'Менеджер по продажам', employmentDate: '2012-03-11' },
+        { login: 'msokolova12919', name: 'Соколова Марина', workgroup: 'Менеджер по продажам', employmentDate: '2005-05-21' },
+        { login: 'korlova51119', name: 'Орлова Кристина',  workgroup: 'Менеджер по продажам', employmentDate: '2016-04-15' }
       ]
     }
   ];

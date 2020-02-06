@@ -158,10 +158,10 @@ export class WorkplanComponent implements OnInit, OnDestroy {
       selectDate: this.select.date
     };
 
-    const absenceRef = this.calendarService.open(overlayOrigin, { data: panelData });
+    const calendarRef = this.calendarService.open(overlayOrigin, { data: panelData });
 
     // после закрытия панели
-    absenceRef.afterClosed()
+    calendarRef.afterClosed()
       .pipe(takeUntil(this.destroyed))
       .subscribe((result: moment.Moment) => {
         if (result) {

@@ -69,7 +69,7 @@ export class WorkplanComponent implements OnInit, OnDestroy {
     private userInfoService: UserInfoService,
     private calendarService: CalendarService
   ) {
-    const BP = { Small: '(max-width: 767px)' };
+    const BP = { Small: '(max-width: 959px)' };
     this.breakpointObserver.observe([
       BP.Small
     ])

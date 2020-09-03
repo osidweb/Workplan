@@ -21,6 +21,11 @@
   width: 260px;
   padding-bottom: 30px;
   border-right: 1px solid $border-color;
+
+  @media (max-width: $screen-lg - 1) {
+    width: 200px;
+  }
+
 }
 
 .departments {
@@ -62,9 +67,13 @@
 .central-part-header {
   position: fixed;
   top: 50px;
-  left: 261px;
+  left: 260px;
   z-index: 10;
   background: #ffffff;
+
+  @media (max-width: $screen-lg - 1) {
+    left: 200px;
+  }
 }
 
 .date-selection {

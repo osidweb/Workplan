@@ -10,6 +10,10 @@
   border-right: 1px solid $border-color;
   text-align: center;
   cursor: pointer;
+
+  @media (max-width: $screen-lg - 1) {
+    width: 24px;
+  }
 }
 
 .sunday {

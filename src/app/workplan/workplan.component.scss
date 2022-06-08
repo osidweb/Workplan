@@ -22,7 +22,7 @@
   padding-bottom: 30px;
   border-right: 1px solid $border-color;
 
-  @media (max-width: $screen-lg - 1) {
+  @media (max-width: ($screen-lg - 1)) {
     width: 200px;
   }
 
@@ -55,7 +55,7 @@
 
   .workgroup-name {
     padding-top: 5px;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .user-name {
@@ -71,7 +71,7 @@
   z-index: 10;
   background: #ffffff;
 
-  @media (max-width: $screen-lg - 1) {
+  @media (max-width: ($screen-lg - 1)) {
     left: 200px;
   }
 }
